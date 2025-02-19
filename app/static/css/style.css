@@ -1,0 +1,250 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and General Layout */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f9;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    background-color: #004466;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+}
+
+header p {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+/* Navigation Bar */
+nav {
+    background-color: #00334d;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    margin: 0 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+nav a:hover {
+    border-bottom: 2px solid #ffcc00;
+}
+
+/* Main Section */
+main {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+main h2 {
+    color: #004466;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ffcc00;
+    padding-bottom: 10px;
+}
+
+main p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+main table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+main table th,
+main table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+main table th {
+    background-color: #004466;
+    color: white;
+}
+
+main table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* RNA Sequence Highlighting */
+.sequence {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #e6f2ff;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-wrap: break-word;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+/* Highlight for Splice Sites */
+.splice-site {
+    background-color: #ffcc00;
+    color: #004466;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* Buttons */
+button {
+    padding: 10px 20px;
+    background-color: #004466;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #00334d;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #00334d;
+    color: white;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav {
+        text-align: left;
+    }
+
+    nav a {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    main {
+        padding: 15px;
+    }
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2rem;
+}
+button {
+    padding: 10px 20px;
+    background-color: #004466;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+table th {
+    background-color: #004466;
+    color: white;
+}
+.table-container {
+    width: 100vw;  /* scales to the page */
+    max-width: 100%;
+    height: 400px; /* Fixed height */
+    overflow: auto; /* Scrollable content */
+    border: 2px solid #004466; /* Dark border to define the cube */
+    padding: 10px;
+    background-color: white; /* Ensures the background is visible */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); /* Soft cube shadow */
+    margin: 20px auto; /* Centering the table */
+}
+
+.table-container table {
+    width: 100%; /* Ensures the table fits inside */
+    border-collapse: collapse;
+}
+
+.table-container th, .table-container td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* Ensures the table header remains fixed on scroll */
+.table-container thead {
+    position: sticky;
+    top: 0;
+    background-color: #004466; /* Keep header color */
+    color: white;
+    z-index: 2;
+}
+
+/* Adjusts font and spacing for readability */
+.table-container th {
+    background-color: #004466;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+}
+
+/* Zebra striping effect for better readability */
+.table-container tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}

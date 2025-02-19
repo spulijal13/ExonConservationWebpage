@@ -1,0 +1,91 @@
+<!--This file is the display for the app-->
+{% extends "layout.html" %}
+
+{% block title %}
+    RNA Event
+{% endblock title %}
+
+{% block content %}
+    <h1> Search </h1>
+    <form method="GET">
+        {{ form.as_p }}
+        <button type="submit">Search</button>
+    </form>
+    <h3>Download Results</h3>
+    <form method="GET">
+        {{ download_form.as_p }}
+        <input type="hidden" name="chromosome" value="{{ request.GET.chromosome }}">
+        <input type="hidden" name="strand" value="{{ request.GET.strand }}">
+        <input type="hidden" name="start_position" value="{{ request.GET.start_position }}">
+        <input type="hidden" name="end_position" value="{{ request.GET.end_position }}">
+        <button type="submit">Download</button>
+    </form>
+
+    <div class='table-container'>
+    {% if exons %}
+        <p> Data is valid </p>
+         <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Chromosome</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Info</th>
+                    <th>Strand</th>
+                    <th>Length</th>
+                    <th>Exon Number</th>
+                    <th>Exon Type</th>
+                    <th>Previous Intron</th>
+                    <th>Next Intron</th>
+                    <th>3' Splice Site Score</th>
+                    <th>5' Splice Site Score</th>
+                    <th>Phastcons100</th>
+                    <th>Ultra In</th>
+                    <th>3'</th>
+                    <th>5'</th>
+                    <th>Cassette</th>
+                    <th>Constant</th>
+                    <th>Similarity Score</th>
+                    <th>Phylo P</th>
+                    <th>Gene Phylo P</th>
+                    <th>Genes Ultra</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for exon in exons %}
+                <tr>
+                    <td>{{ exon.exon_id }}</td>
+                    <td>{{ exon.name }}</td>
+                    <td>{{ exon.chrm }}</td>
+                    <td>{{ exon.start }}</td>
+                    <td>{{ exon.end }}</td>
+                    <td>{{ exon.info }}</td>
+                    <td>{{ exon.strand }}</td>
+                    <td>{{ exon.length }}</td>
+                    <td>{{ exon.exon_number }}</td>
+                    <td>{{ exon.exon_type }}</td>
+                    <td>{{ exon.previous_intron }}</td>
+                    <td>{{ exon.next_intron }}</td>
+                    <td>{{ exon.ss_score3 }}</td>
+                    <td>{{ exon.ss_score5 }}</td>
+                    <td>{{ exon.phastcons_100 }}</td>
+                    <td>{{ exon.ultra_in }}</td>
+                    <td>{{ exon.prime3 }}</td>
+                    <td>{{ exon.prime5 }}</td>
+                    <td>{{ exon.cassette }}</td>
+                    <td>{{ exon.const }}</td>
+                    <td>{{ exon.similarity_score }}</td>
+                    <td>{{ exon.phylo_p }}</td>
+                    <td>{{ exon.gene_phylo_p }}</td>
+                    <td>{{ exon.genes_ultra }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No results found</p>
+    {% endif %}
+    </div>
+{% endblock content %}

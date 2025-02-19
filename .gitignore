@@ -1,0 +1,46 @@
+# Byte-compiled / Cached files
+*.pyc
+__pycache__/
+
+# Virtual environment
+venv/
+env/
+*.venv
+*.env
+Pipfile
+Pipfile.lock
+
+# Database files (SQLite, if used for testing)
+db.sqlite3
+*.sqlite3
+
+# Django secret keys and settings (DO NOT PUSH)
+.env
+config/settings/local.py
+config/settings/dev.py
+
+# Logs & Debug Files
+*.log
+logs/
+debug.log
+
+# Migrations (keep the __init__.py but ignore others if needed)
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Static and media files (if collected outside the repo)
+staticfiles/
+media/
+
+# IDE-specific files (VS Code, PyCharm, etc.)
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Docker
+*.docker
+docker-compose.override.yml
+
+# PostgreSQL Data (if using local PG data directory)
+pgdata/
+*.dump
