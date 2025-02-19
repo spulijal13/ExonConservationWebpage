@@ -2,7 +2,7 @@
 FROM python:3.11.4-slim-buster
 
 # Set work directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -13,11 +13,11 @@ RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/ap
 
 # Install dependencies
 RUN pip install --upgrade pip
-COPY /app/requirements.txt /usr/src/app/requirements.txt
+COPY ./requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy entrypoint.sh
-COPY /app/entrypoint.sh /usr/src/app/entrypoint.sh
+COPY ./entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
 
 # Copy the entire project
