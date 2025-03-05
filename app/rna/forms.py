@@ -11,13 +11,26 @@ class SearchForm(forms.Form):
     
     # Intializes the list of choices for each of the following values
     CHROMOSOME_CHOICES = [("", "-- SELECT CHROMOSOME --")]
-    STRAND_CHOICES = [("", "-- SELECT STRAND --")]
+    EXON_TYPE_CHOICES = [("", "-- SELECT EXON TYPE --")]
+    COMPARISON_CHOICES = [
+        ('eq', '='),
+        ('gt', '>'),
+        ('lt', '<'),
+        ('gte', '>='),
+        ('lte', '<=')
+    ]
 
     # Values from the views file that can be searched through, defines the type of selection as well. (i.e. choice, type)
-    chromosome = forms.ChoiceField(choices=CHROMOSOME_CHOICES, required=False, label="Chromosome #")
-    strand = forms.ChoiceField(choices=STRAND_CHOICES, required=False, label='Strand')
+    chromosome = forms.ChoiceField(choices=CHROMOSOME_CHOICES, required=False, label="Chromosome")
+    gene_name = forms.CharField(required=False, label='Gene Name')
     start_position = forms.IntegerField(required=False, label='Starting Position')
     end_position = forms.IntegerField(required=False, label="Ending Position")
+    length = forms.IntegerField(required=False, label="Exon Length")
+    exon_number = forms.IntegerField(required=False, label="Exon Number")
+    total_exon = forms.IntegerField(required=False, label="Total Exon Number (in gene)")
+    total_exon_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False)
+    exon_type = forms.ChoiceField(choices=EXON_TYPE_CHOICES, required=False, label="Exon Type")
+    
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,22 +38,30 @@ class SearchForm(forms.Form):
         print("Initializing SearchForm...")
 
         chromosome_choices = list(ExonConservation.objects.values_list('chrm', flat=True).distinct())
-        strand_choices = list(ExonConservation.objects.values_list('strand', flat=True).distinct())
+        
+        exon_type_choices = list(ExonConservation.objects.values_list('exon_type', flat=True).distinct())
 
         if chromosome_choices:
             self.fields['chromosome'].choices += sorted([(chrm, chrm) for chrm in chromosome_choices])
-
-        if strand_choices:
-            self.fields['strand'].choices += [(strand, strand) for strand in strand_choices]
+        
+        if exon_type_choices:
+            self.fields['exon_type'].choices += sorted([(exon_type, exon_type) for exon_type in exon_type_choices])
+        
+        
     
     def clean(self):
         # Gets the data using the information that is typed in.
         clean_data = super().clean()
         
         chromosome = clean_data.get('chromosome')
+        gene_name = clean_data.get('name')
         start_position = clean_data.get('start_position')
         end_position = clean_data.get('end_position')
-        strand = clean_data.get("strand")
+        length = clean_data.get('length')
+        exon_number = clean_data.get('exon_number')
+        total_exon = clean_data.get('total_exon')
+        total_exon_comparison = clean_data.get('total_exon_comparison')
+        exon_type = clean_data.get('exon_type')
         
         # Chromosome can stand by itself, does not matter if strand, start_position or end position are empty.
         # Strand can also stand by itself, but depending on the value of strand start or end position cannot stad by itself.
@@ -49,14 +70,8 @@ class SearchForm(forms.Form):
         
         # The constraints when querying
         if start_position is not None or end_position is not None:
-            if strand is None:
-                raise forms.ValidationError("Need to give a value for strand if start or edn position is given.")
-            if start_position is None or end_position is None:
-                raise forms.ValidationError("Provide both start and end position if one if given.") # can edit out, but keep simple at first.
-            if strand == '+' and start_position >= end_position:
+            if start_position >= end_position:
                 raise forms.ValidationError("On the positive strand the start position has to be less that end position.")
-            if strand == '-' and start_position <=  end_position:
-                raise forms.ValidationError("On the negative strand the start position has to be less than the end position")
         
         return clean_data
 

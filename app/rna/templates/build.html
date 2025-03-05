@@ -15,7 +15,7 @@
     <form method="GET">
         {{ download_form.as_p }}
         <input type="hidden" name="chromosome" value="{{ request.GET.chromosome }}">
-        <input type="hidden" name="strand" value="{{ request.GET.strand }}">
+        <input type="hidden" name="gene_name" value="{{ request.GET.strand }}">
         <input type="hidden" name="start_position" value="{{ request.GET.start_position }}">
         <input type="hidden" name="end_position" value="{{ request.GET.end_position }}">
         <button type="submit">Download</button>
@@ -28,7 +28,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
+                    <th>Gene Name</th>
                     <th>Chromosome</th>
                     <th>Start</th>
                     <th>End</th>
@@ -37,6 +37,7 @@
                     <th>Length</th>
                     <th>Exon Number</th>
                     <th>Exon Type</th>
+                    <th>Total Exon</th>
                     <th>Previous Intron</th>
                     <th>Next Intron</th>
                     <th>3' Splice Site Score</th>
@@ -65,6 +66,7 @@
                     <td>{{ exon.strand }}</td>
                     <td>{{ exon.length }}</td>
                     <td>{{ exon.exon_number }}</td>
+                    <td>{{ exon.total_exon }}</td>
                     <td>{{ exon.exon_type }}</td>
                     <td>{{ exon.previous_intron }}</td>
                     <td>{{ exon.next_intron }}</td>

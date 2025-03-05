@@ -11,9 +11,10 @@ import csv
 
 
 
-csv_file = 'data/Exon_Conservation_Share.csv'
+csv_file = 'data/Exon_Conservation_Share_Split.csv'
 
 with open(csv_file, 'r') as file:
+    
     reader = csv.DictReader(file)
     for row in reader:
         ExonConservation.objects.create(
@@ -26,6 +27,7 @@ with open(csv_file, 'r') as file:
             strand=row['strand'],
             length=row['length'],
             exon_number=row['exon_number'],
+            total_exon=row['total_exon'],
             exon_type=row['exon_type'],
             previous_intron=row['previous_intron'],
             next_intron=row['next_intron'],
@@ -42,5 +44,5 @@ with open(csv_file, 'r') as file:
             gene_phylo_p=row['gene_phylo_p'],
             genes_ultra=row['genes_ultra']
         )
-        
+
 print("Data import completed successfully!")

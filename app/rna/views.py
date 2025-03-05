@@ -2,6 +2,8 @@ from django.shortcuts import render
 from .models import ExonConservation
 from .forms import SearchForm, DownloadData
 import csv
+from django.db.models import IntegerField, F, Value
+from django.db.models.functions import Cast, Substr, StrIndex
 from django.http import HttpResponse
 
 def exon_search(request):
@@ -20,21 +22,46 @@ def exon_search(request):
             query = ExonConservation.objects.all()
             
             chromosome = form.cleaned_data.get('chromosome')
-            strand = form.cleaned_data.get('strand')
+            gene_name = form.cleaned_data.get('gene_name')
             start_position = form.cleaned_data.get('start_position')
             end_position = form.cleaned_data.get('end_position')
+            length = form.cleaned_data.get('length')
+            exon_number = form.cleaned_data.get('exon_number')
+            total_exon = form.cleaned_data.get('total_exon')
+            total_exon_comparison = form.cleaned_data.get('total_exon_comparison')
+            exon_type = form.cleaned_data.get('exon_type')
+            
+            
 
             # Apply filters if values are provided
             if chromosome:
                 query = query.filter(chrm=chromosome)
-            if strand:
-                query = query.filter(strand=strand)
+            if gene_name:
+                query = query.filter(name=gene_name)
             if start_position:
                 query = query.filter(start__gte=start_position)
             if end_position:
-                query = query.filter(end__lte=end_position)  # Fixed typo (filer -> filter)
+                query = query.filter(end__lte=end_position)
+            if exon_number:
+                query = query.filter(exon_number__regex=r'^' + str(exon_number) + r'_')
+            if total_exon:
+                if total_exon_comparison == 'eq':
+                    query = query.annotate(second_part=Cast(Substr('exon_number', StrIndex('exon_number', Value('_')) + 1), output_field=IntegerField())
+                                           ).filter(second_part=total_exon)
+                elif total_exon_comparison == 'gt':
+                    query = query.annotate(second_part=Cast(Substr('exon_number', StrIndex('exon_number', Value('_')) + 1), output_field=IntegerField())
+                                           ).filter(second_part__gt=total_exon)
+                elif total_exon_comparison == 'lt':
+                    query = query.annotate(second_part=Cast(Substr('exon_number', StrIndex('exon_number', Value('_')) + 1), output_field=IntegerField())
+                                           ).filter(second_part__lt=total_exon)
+                elif total_exon_comparison == 'gte':
+                    query = query.annotate(second_part=Cast(Substr('exon_number', StrIndex('exon_number', Value('_')) + 1), output_field=IntegerField())
+                                           ).filter(second_part__gte=total_exon)
+                elif total_exon_comparison == 'lte':
+                    query = query.annotate(second_part=Cast(Substr('exon_number', StrIndex('exon_number', Value('_')) + 1), output_field=IntegerField())
+                                           ).filter(second_part__lte=total_exon)
 
-            exons = query  # Update exons with filtered results
+            exons = query
 
     # File Download Handling
     if 'file_format' in request.GET and exons.exists():

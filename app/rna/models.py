@@ -15,6 +15,7 @@ class ExonConservation(models.Model):
     strand = models.CharField(max_length=255)
     length = models.CharField(max_length=255)
     exon_number = models.CharField(max_length=255)
+    total_exon = models.CharField(max_length=100)
     exon_type = models.CharField(max_length=255)
     previous_intron = models.CharField(max_length=255)
     next_intron = models.CharField(max_length=255)

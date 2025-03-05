@@ -13,15 +13,15 @@ RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/ap
 
 # Install dependencies
 RUN pip install --upgrade pip
-COPY /app/requirements.txt .
+COPY ./requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy entrypoint.sh
-COPY /app/entrypoint.sh .
+COPY ./entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
 
 # Copy the entire project
-COPY . /app/
+COPY . .
 
 # Run entrypoint.sh
-ENTRYPOINT ["bash", "/app/entrypoint.sh"]
+ENTRYPOINT ["bash", "./entrypoint.sh"]

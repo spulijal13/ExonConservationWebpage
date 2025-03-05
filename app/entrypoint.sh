@@ -11,6 +11,9 @@ python manage.py collectstatic --noinput
 echo "starting django server"
 exec python manage.py runserver 0.0.0.0:8000
 
+echo "Initializing something"
+python manage.py migrate
+
 if [ "$DATABASE" = "postgres" ]
 then
     echo "Waiting for postgres..."
@@ -38,7 +41,6 @@ else
     echo "rna_exonconservation already has data. Skipping import_data.py."
 fi
 
-# python manage.py flush --no-input
-# python manage.py migrate
-
 exec "$@"
+
+python manage.py migrate
