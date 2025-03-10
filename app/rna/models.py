@@ -33,9 +33,7 @@ class ExonConservation(models.Model):
     genes_ultra = models.CharField(max_length=255)
     
     class Meta:
-        # defines the database that should be read when adding information to each of the following values.
         db_table = 'rna_exonconservation'
-        managed = False
 
     def __str__(self) -> str:
         return self.exon_id
