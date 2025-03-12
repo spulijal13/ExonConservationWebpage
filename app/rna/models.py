@@ -34,6 +34,7 @@ class ExonConservation(models.Model):
     
     class Meta:
         db_table = 'rna_exonconservation'
+        managed = False
 
     def __str__(self) -> str:
         return self.exon_id

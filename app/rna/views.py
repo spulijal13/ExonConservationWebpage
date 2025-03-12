@@ -46,20 +46,15 @@ def exon_search(request):
                 query = query.filter(exon_number__regex=r'^' + str(exon_number) + r'_')
             if total_exon:
                 if total_exon_comparison == 'eq':
-                    query = query.annotate(second_part=Cast(Substr('exon_number', StrIndex('exon_number', Value('_')) + 1), output_field=IntegerField())
-                                           ).filter(second_part=total_exon)
+                    query = query.filter(total_exon=total_exon)
                 elif total_exon_comparison == 'gt':
-                    query = query.annotate(second_part=Cast(Substr('exon_number', StrIndex('exon_number', Value('_')) + 1), output_field=IntegerField())
-                                           ).filter(second_part__gt=total_exon)
+                    query = query.filter(total_exon__gt=total_exon)
                 elif total_exon_comparison == 'lt':
-                    query = query.annotate(second_part=Cast(Substr('exon_number', StrIndex('exon_number', Value('_')) + 1), output_field=IntegerField())
-                                           ).filter(second_part__lt=total_exon)
+                    query = query.filter(total_exon__lt=total_exon)
                 elif total_exon_comparison == 'gte':
-                    query = query.annotate(second_part=Cast(Substr('exon_number', StrIndex('exon_number', Value('_')) + 1), output_field=IntegerField())
-                                           ).filter(second_part__gte=total_exon)
+                    query = query.filter(total_exon__gte=total_exon)
                 elif total_exon_comparison == 'lte':
-                    query = query.annotate(second_part=Cast(Substr('exon_number', StrIndex('exon_number', Value('_')) + 1), output_field=IntegerField())
-                                           ).filter(second_part__lte=total_exon)
+                    query = query.filter(total_exon__lte=total_exon)
 
             exons = query
 
