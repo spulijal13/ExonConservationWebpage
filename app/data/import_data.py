@@ -2,7 +2,7 @@ import os
 import sys
 import django
 
-sys.path.append('/usr/src/app')
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'exon.settings')  # Update to your actual settings module
 django.setup()
 
@@ -21,8 +21,8 @@ with open(csv_file, 'r') as file:
             exon_id=row['exon_id'],
             name=row['name'],
             chrm=row['chrm'],
-            start=row['start'],
-            end=row['end'],
+            start_position=row['start'],
+            end_position=row['end'],
             info=row['info'],
             strand=row['strand'],
             length=row['length'],

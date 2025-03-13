@@ -26,9 +26,10 @@ class SearchForm(forms.Form):
     start_position = forms.IntegerField(required=False, label='Starting Position')
     end_position = forms.IntegerField(required=False, label="Ending Position")
     length = forms.IntegerField(required=False, label="Exon Length")
+    length_comaprison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False, label='Length Comaparison')
     exon_number = forms.IntegerField(required=False, label="Exon Number")
     total_exon = forms.IntegerField(required=False, label="Total Exon Number (in gene)")
-    total_exon_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False)
+    total_exon_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False, label='Total Exon Comparison')
     exon_type = forms.ChoiceField(choices=EXON_TYPE_CHOICES, required=False, label="Exon Type")
     
     
@@ -58,20 +59,12 @@ class SearchForm(forms.Form):
         start_position = clean_data.get('start_position')
         end_position = clean_data.get('end_position')
         length = clean_data.get('length')
+        length_comparison = clean_data.get('length_comparison')
         exon_number = clean_data.get('exon_number')
         total_exon = clean_data.get('total_exon')
         total_exon_comparison = clean_data.get('total_exon_comparison')
         exon_type = clean_data.get('exon_type')
         
-        # Chromosome can stand by itself, does not matter if strand, start_position or end position are empty.
-        # Strand can also stand by itself, but depending on the value of strand start or end position cannot stad by itself.
-        # Start and end position depend on the fact that strand is a value and depending on the value one has to be greater than
-        # the other.
-        
-        # The constraints when querying
-        if start_position is not None or end_position is not None:
-            if start_position >= end_position:
-                raise forms.ValidationError("On the positive strand the start position has to be less that end position.")
         
         return clean_data
 

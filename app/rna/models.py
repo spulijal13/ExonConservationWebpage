@@ -9,13 +9,13 @@ class ExonConservation(models.Model):
     exon_id = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     chrm = models.CharField(max_length=50)
-    start = models.CharField(max_length=255)
-    end = models.CharField(max_length=255)
+    start_position = models.IntegerField()
+    end_position = models.IntegerField()
     info = models.CharField(max_length=255)
     strand = models.CharField(max_length=255)
-    length = models.CharField(max_length=255)
+    length = models.IntegerField()
     exon_number = models.CharField(max_length=255)
-    total_exon = models.CharField(max_length=100)
+    total_exon = models.IntegerField()
     exon_type = models.CharField(max_length=255)
     previous_intron = models.CharField(max_length=255)
     next_intron = models.CharField(max_length=255)
@@ -34,7 +34,6 @@ class ExonConservation(models.Model):
     
     class Meta:
         db_table = 'rna_exonconservation'
-        managed = False
 
     def __str__(self) -> str:
         return self.exon_id

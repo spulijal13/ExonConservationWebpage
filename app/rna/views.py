@@ -26,6 +26,7 @@ def exon_search(request):
             start_position = form.cleaned_data.get('start_position')
             end_position = form.cleaned_data.get('end_position')
             length = form.cleaned_data.get('length')
+            length_comparison = form.cleaned_data.get('length_comaprison')
             exon_number = form.cleaned_data.get('exon_number')
             total_exon = form.cleaned_data.get('total_exon')
             total_exon_comparison = form.cleaned_data.get('total_exon_comparison')
@@ -39,9 +40,20 @@ def exon_search(request):
             if gene_name:
                 query = query.filter(name=gene_name)
             if start_position:
-                query = query.filter(start__gte=start_position)
+                query = query.filter(start_position__gte=start_position)
             if end_position:
-                query = query.filter(end__lte=end_position)
+                query = query.filter(end_position__lte=end_position)
+            if length:
+                if length_comparison == 'eq':
+                    query = query.filter(length=length)
+                elif length_comparison == 'gt':
+                    query = query.filter(length__gt=length)
+                elif length_comparison == 'lt':
+                    query = query.filter(length__lt=length)
+                elif length_comparison == 'gte':
+                    query = query.filter(length__gte=length)
+                elif length_comparison == 'lte':
+                    query = query.filter(length__lte=length)
             if exon_number:
                 query = query.filter(exon_number__regex=r'^' + str(exon_number) + r'_')
             if total_exon:
@@ -55,6 +67,8 @@ def exon_search(request):
                     query = query.filter(total_exon__gte=total_exon)
                 elif total_exon_comparison == 'lte':
                     query = query.filter(total_exon__lte=total_exon)
+            if exon_type:
+                query = query.filter(exon_type=exon_type)
 
             exons = query
 
@@ -77,7 +91,7 @@ def exon_search(request):
             
             for exon in exons:
                 writer.writerow([
-                    exon.exon_id, exon.name, exon.chrm, exon.start, exon.end, exon.info,
+                    exon.exon_id, exon.name, exon.chrm, exon.start_position, exon.end_position, exon.info,
                     exon.strand, exon.length, exon.exon_number, exon.exon_type, 
                     exon.previous_intron, exon.next_intron, exon.ss_score3, exon.ss_score5,
                     exon.phastcons_100, exon.ultra_in, exon.prime3, exon.prime5, 
@@ -92,7 +106,7 @@ def exon_search(request):
             response['Content-Disposition'] = 'attachment; filename="data.txt"'
             
             for exon in exons:
-                response.write(f"{exon.exon_id}, {exon.name}, {exon.chrm}, {exon.start}, {exon.end}, {exon.info}, "
+                response.write(f"{exon.exon_id}, {exon.name}, {exon.chrm}, {exon.start_position}, {exon.end_position}, {exon.info}, "
                                f"{exon.strand}, {exon.length}, {exon.exon_number}, {exon.exon_type}, "
                                f"{exon.previous_intron}, {exon.next_intron}, {exon.ss_score3}, {exon.ss_score5}, "
                                f"{exon.phastcons_100}, {exon.ultra_in}, {exon.prime3}, {exon.prime5}, "
