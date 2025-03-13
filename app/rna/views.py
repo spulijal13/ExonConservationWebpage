@@ -31,7 +31,14 @@ def exon_search(request):
             total_exon = form.cleaned_data.get('total_exon')
             total_exon_comparison = form.cleaned_data.get('total_exon_comparison')
             exon_type = form.cleaned_data.get('exon_type')
-            
+            splice_site_3 = form.cleaned_data.get('splice_site_3')
+            splice_site_3_comparison = form.cleaned_data.get('splice_site_3_comparison')
+            splice_site_5 = form.cleaned_data.get('splice_site_5')
+            splice_site_5_comparison = form.cleaned_data.get('splice_site_5_comparison')
+            phylo_p = form.cleaned_data.get('phylo_p')
+            phylo_p_comparison = form.cleaned_data.get('phylo_p_comparison')
+            ultra_in = form.cleaned_data.get('ultra_in')
+            ultra_in_comparison = form.cleaned_data.get('ultra_in_comparison')
             
 
             # Apply filters if values are provided
@@ -69,7 +76,50 @@ def exon_search(request):
                     query = query.filter(total_exon__lte=total_exon)
             if exon_type:
                 query = query.filter(exon_type=exon_type)
-
+            if splice_site_3:
+                if splice_site_3_comparison == 'eq':
+                    query = query.filter(ss_score3=splice_site_3)
+                elif splice_site_3_comparison == 'gt':
+                    query = query.filter(ss_score3__gt=splice_site_3)
+                elif splice_site_3_comparison == 'lt':
+                    query = query.filter(ss_score3__lt=splice_site_3)
+                elif splice_site_3_comparison == 'gte':
+                    query = query.filter(ss_score3__gte=splice_site_3)
+                elif splice_site_3_comparison == 'lte':
+                    query = query.filter(ss_score3__lte=splice_site_3)
+            if splice_site_5:
+                if splice_site_5_comparison == 'eq':
+                    query = query.filter(ss_score5=splice_site_5)
+                elif splice_site_5_comparison == 'gt':
+                    query = query.filter(ss_score5__gt=splice_site_5)
+                elif splice_site_5_comparison == 'lt':
+                    query = query.filter(ss_score5__lt=splice_site_5)
+                elif splice_site_5_comparison == 'gte':
+                    query = query.filter(ss_score5__gte=splice_site_5)
+                elif splice_site_5_comparison == 'lte':
+                    query = query.filter(ss_score5__lte=splice_site_5)
+            if phylo_p:
+                if phylo_p_comparison == 'eq':
+                    query = query.filter(phylo_p=phylo_p)
+                elif phylo_p_comparison == 'gt':
+                    query = query.filter(phylo_p__gt=phylo_p)
+                elif phylo_p_comparison == 'lt':
+                    query = query.filter(phylo_p__lt=phylo_p)
+                elif phylo_p_comparison == 'gte':
+                    query = query.filter(phylo_p__gte=phylo_p)
+                elif phylo_p_comparison == 'lte':
+                    query = query.filter(phylo_p__lte=phylo_p)
+            if ultra_in:
+                if ultra_in_comparison == 'eq':
+                    query = query.filter(ultra_in=ultra_in)
+                elif ultra_in_comparison == 'gt':
+                    query = query.filter(ultra_in__gt=ultra_in)
+                elif ultra_in_comparison == 'lt':
+                    query = query.filter(ultra_in__lt=ultra_in)
+                elif ultra_in_comparison == 'gte':
+                    query = query.filter(ultra_in__gte=ultra_in)
+                elif ultra_in_comparison == 'lte':
+                    query = query.filter(ultra_in__lte=ultra_in)
             exons = query
 
     # File Download Handling

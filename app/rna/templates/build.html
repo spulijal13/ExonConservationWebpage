@@ -15,10 +15,24 @@
     <form method="GET">
         {{ download_form.as_p }}
         <input type="hidden" name="chromosome" value="{{ request.GET.chromosome }}">
-        <input type="hidden" name="gene_name" value="{{ request.GET.strand }}">
-        <input type="hidden" name="start_position" value="{{ request.GET.start_position }}">
-        <input type="hidden" name="end_position" value="{{ request.GET.end_position }}">
-        <button type="submit">Download</button>
+    <input type="hidden" name="gene_name" value="{{ request.GET.gene_name }}">
+    <input type="hidden" name="start_position" value="{{ request.GET.start_position }}">
+    <input type="hidden" name="end_position" value="{{ request.GET.end_position }}">
+    <input type="hidden" name="length" value="{{ request.GET.length }}">
+    <input type="hidden" name="length_comparison" value="{{ request.GET.length_comparison }}">
+    <input type="hidden" name="exon_number" value="{{ request.GET.exon_number }}">
+    <input type="hidden" name="total_exon" value="{{ request.GET.total_exon }}">
+    <input type="hidden" name="total_exon_comparison" value="{{ request.GET.total_exon_comparison }}">
+    <input type="hidden" name="exon_type" value="{{ request.GET.exon_type }}">
+    <input type="hidden" name="splice_site_3" value="{{ request.GET.splice_site_3 }}">
+    <input type="hidden" name="splice_site_3_comparison" value="{{ request.GET.splice_site_3_comparison }}">
+    <input type="hidden" name="splice_site_5" value="{{ request.GET.splice_site_5 }}">
+    <input type="hidden" name="splice_site_5_comparison" value="{{ request.GET.splice_site_5_comparison }}">
+    <input type="hidden" name="phylo_p" value="{{ request.GET.phylo_p }}">
+    <input type="hidden" name="phylo_p_comparison" value="{{ request.GET.phylo_p_comparison }}">
+    <input type="hidden" name="ultra_in" value="{{ request.GET.ultra_in }}">
+    <input type="hidden" name="ultra_in_comparison" value="{{ request.GET.ultra_in_comparison }}">
+    <button type="submit">Download</button>
     </form>
 
     <div class='table-container'>

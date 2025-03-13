@@ -31,6 +31,16 @@ class SearchForm(forms.Form):
     total_exon = forms.IntegerField(required=False, label="Total Exon Number (in gene)")
     total_exon_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False, label='Total Exon Comparison')
     exon_type = forms.ChoiceField(choices=EXON_TYPE_CHOICES, required=False, label="Exon Type")
+    splice_site_3 = forms.FloatField(required=False, label="3' Splice Site Score")
+    splice_site_3_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, label="3' Splice Site Comparison")
+    splice_site_5 = forms.FloatField(required=False, label="5' Splice Site Score")
+    splice_site_5_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, label="5' Splice Site Comparison")
+    phylo_p = forms.FloatField(required=False, label='Phylo P Score')
+    phylo_p_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, label='Phylo P Score Comparison')
+    ultra_in = forms.FloatField(required=False, label='Ultra In Score')
+    ultra_in_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, label='Ultra In Score Comparison')
+    
+    
     
     
     def __init__(self, *args, **kwargs):
@@ -64,7 +74,14 @@ class SearchForm(forms.Form):
         total_exon = clean_data.get('total_exon')
         total_exon_comparison = clean_data.get('total_exon_comparison')
         exon_type = clean_data.get('exon_type')
-        
+        splice_site_3 = clean_data.get('splice_site_3')
+        splice_site_3_comparison = clean_data.get('splice_site_5_comparison')
+        splice_site_5 = clean_data.get('splice_site_5')
+        splice_site_5_comparison = clean_data.get('splice_site_5_comparison')
+        phylo_p = clean_data.get('phylo_p')
+        phylo_p_comparison = clean_data.get('phylo_p_comparison')
+        ultra_in = clean_data.get('ultra_in')
+        ultra_in_comparison = clean_data.get('ultra_in_comparison')
         
         return clean_data
 
