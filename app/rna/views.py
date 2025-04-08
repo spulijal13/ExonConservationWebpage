@@ -26,7 +26,7 @@ def exon_search(request):
             start_position = form.cleaned_data.get('start_position')
             end_position = form.cleaned_data.get('end_position')
             length = form.cleaned_data.get('length')
-            length_comparison = form.cleaned_data.get('length_comaprison')
+            length_comparison = form.cleaned_data.get('length_comparison')
             exon_number = form.cleaned_data.get('exon_number')
             total_exon = form.cleaned_data.get('total_exon')
             total_exon_comparison = form.cleaned_data.get('total_exon_comparison')

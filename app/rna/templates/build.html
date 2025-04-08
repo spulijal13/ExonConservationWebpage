@@ -8,7 +8,148 @@
 {% block content %}
     <h1> Search </h1>
     <form method="GET">
-        {{ form.as_p }}
+        <div style="display: flex">
+            <div>
+                <label for="{{ form.chromosome.id_for_label }}">Chromsome</label>
+                {{ form.chromosome }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex">
+            <div>
+                <label for="{{ form.gene_name.id_for_label }}">Gene Name</label>
+                {{ form.gene_name }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex">
+            <div>
+                <label for="{{ form.start_position.id_for_label }}">Start Position</label>
+                {{ form.start_position }}
+            </div>
+        </div> 
+
+        <br>
+
+        <div style="display: flex">
+            <div>
+                <label for="{{ form.end_position.id_for_label }}">End Position</label>
+                {{ form.end_position }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div>
+                <label for="{{ form.length.id_for_label }}">Exon Length:</label>
+                {{ form.length }}
+            </div>
+            
+            <div>
+                {{ form.length_comparison }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex">
+            <div>
+                <label for="{{ form.exon_number.id_for_label }}">Exon Number</label>
+                {{ form.exon_number }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div>
+                <label for="{{ form.total_exon.id_for_label }}">Total Exons</label>
+                {{ form.total_exon }}
+            </div>
+            
+            <div>
+                {{ form.total_exon_comparison }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex">
+            <div>
+                <label for="{{ form.exon_type.id_for_label }}">Exon Type</label>
+                {{ form.exon_type }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div>
+                <label for="{{ form.splice_site_3.id_for_label }}">3' Splice Site Score</label>
+                {{ form.splice_site_3 }}
+            </div>
+            
+            <div>
+                {{ form.splice_site_3_comparison }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div>
+                <label for="{{ form.splice_site_5.id_for_label }}">5' Splice Site Score</label>
+                {{ form.splice_site_5 }}
+            </div>
+            
+            <div>
+                {{ form.splice_site_5_comparison }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div>
+                <label for="{{ form.splice_site_3.id_for_label }}">3' Splice Site Score</label>
+                {{ form.splice_site_3 }}
+            </div>
+            
+            <div>
+                {{ form.splice_site_3_comparison }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div>
+                <label for="{{ form.phylo_p.id_for_label }}">Phylo P Score</label>
+                {{ form.phylo_p }}
+            </div>
+            
+            <div>
+                {{ form.phylo_p_comparison }}
+            </div>
+        </div>
+
+        <br>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div>
+                <label for="{{ form.ultra_in.id_for_label }}">Ultra Intron Score</label>
+                {{ form.ultra_in }}
+            </div>
+            
+            <div>
+                {{ form.ultra_in_comparison }}
+            </div>
+        </div>
         <button type="submit">Search</button>
     </form>
     <h3>Download Results</h3>

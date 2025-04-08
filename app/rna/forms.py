@@ -26,7 +26,7 @@ class SearchForm(forms.Form):
     start_position = forms.IntegerField(required=False, label='Starting Position')
     end_position = forms.IntegerField(required=False, label="Ending Position")
     length = forms.IntegerField(required=False, label="Exon Length")
-    length_comaprison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False, label='Length Comaparison')
+    length_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False, label='Length Comaparison')
     exon_number = forms.IntegerField(required=False, label="Exon Number")
     total_exon = forms.IntegerField(required=False, label="Total Exon Number (in gene)")
     total_exon_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False, label='Total Exon Comparison')
