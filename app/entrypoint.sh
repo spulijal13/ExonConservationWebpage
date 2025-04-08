@@ -3,16 +3,16 @@
 cd /app || exit
 
 echo "Applying database migrations..."
-python manage.py migrate
+python app/manage.py migrate
 
 echo "Collecting static files"
-python manage.py collectstatic --noinput
+python app/manage.py collectstatic --noinput
 
 echo "starting django server"
-exec python manage.py runserver 0.0.0.0:8000
+exec python app/manage.py runserver 0.0.0.0:8000
 
 echo "Initializing something"
-python manage.py migrate
+python app/manage.py migrate
 
 if [ "$DATABASE" = "postgres" ]
 then
@@ -43,4 +43,4 @@ fi
 
 exec "$@"
 
-python manage.py migrate
+python app/manage.py migrate
