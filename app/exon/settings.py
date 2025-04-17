@@ -76,8 +76,16 @@ WSGI_APPLICATION = "exon.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+print("DATABASE_URL in env:", os.environ.get("DATABASE_URL"))
+
 DATABASES = {
-    """'default': {
+    'default': dj_database_url.config(
+        default=os.environ.get("DATABASE_URL"),
+        conn_max_age=600,
+    )
+}
+
+"""'default': {
         'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.postgresql'),
         'NAME': os.environ.get('SQL_DATABASE'),
         'USER': os.environ.get('SQL_USER'),
@@ -85,12 +93,6 @@ DATABASES = {
         'HOST': os.environ.get('SQL_HOST'),
         'PORT': os.environ.get('SQL_PORT', '5432'),
     },"""
-    'default': dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=600,
-    )
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
