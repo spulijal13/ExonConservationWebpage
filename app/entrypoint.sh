@@ -41,6 +41,7 @@ else
     echo "rna_exonconservation already has data. Skipping import_data.py."
 fi
 
-exec "$@"
 
-python app/manage.py migrate
+python app/manage.py makemigrations --noinput
+python app/manage.py migrate --noinput
+exec "$@"
