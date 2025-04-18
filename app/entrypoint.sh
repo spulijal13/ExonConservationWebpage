@@ -13,11 +13,11 @@ if [ "$DATABASE" = "postgres" ]; then
 fi
 
 echo "Running makemigrations and migrate..."
-python manage.py makemigrations --noinput
-python manage.py migrate --noinput
+python app/manage.py makemigrations --noinput
+python app/manage.py migrate --noinput
 
 # Check if the table exists (without causing the script to fail if it doesn't)
-TABLE_EXISTS=$(python manage.py dbshell <<EOF
+TABLE_EXISTS=$(python app/manage.py dbshell <<EOF
 SELECT to_regclass('public.rna_exonconservation');
 EOF
 )
@@ -27,7 +27,7 @@ TABLE_EXISTS=$(echo "$TABLE_EXISTS" | grep -o 'rna_exonconservation')
 if [ "$TABLE_EXISTS" = "rna_exonconservation" ]; then
     echo "Table exists. Checking row count..."
 
-    TABLE_COUNT=$(python manage.py dbshell <<EOF
+    TABLE_COUNT=$(python app/manage.py dbshell <<EOF
 SELECT COUNT(*) FROM rna_exonconservation;
 EOF
 )
@@ -41,7 +41,7 @@ EOF
     fi
 else
     echo "Creating rna_exonconservation table if not exists..."
-    python manage.py dbshell <<EOF
+    python app/manage.py dbshell <<EOF
 CREATE TABLE IF NOT EXISTS rna_exonconservation (
     id BIGSERIAL PRIMARY KEY,
     exon_id VARCHAR(255) NOT NULL,
@@ -74,7 +74,7 @@ EOF
 fi
 
 echo "Collecting static files..."
-python manage.py collectstatic --noinput
+python app/manage.py collectstatic --noinput
 
 echo "Starting Django server..."
-exec python manage.py runserver 0.0.0.0:8000
+exec python app/manage.py runserver 0.0.0.0:8000
