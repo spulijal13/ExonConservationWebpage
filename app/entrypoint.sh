@@ -40,37 +40,7 @@ EOF
         echo "Table has data. Skipping import."
     fi
 else
-    echo "Creating rna_exonconservation table if not exists..."
-    python app/manage.py dbshell <<EOF
-CREATE TABLE IF NOT EXISTS rna_exonconservation (
-    id BIGSERIAL PRIMARY KEY,
-    exon_id VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    chrm VARCHAR(50) NOT NULL,
-    start_position INTEGER NOT NULL,
-    end_position INTEGER NOT NULL,
-    info VARCHAR(255) NOT NULL,
-    strand VARCHAR(255) NOT NULL,
-    length INTEGER NOT NULL,
-    exon_number VARCHAR(255) NOT NULL,
-    total_exon INTEGER NOT NULL,
-    exon_type VARCHAR(255) NOT NULL,
-    previous_intron VARCHAR(255) NOT NULL,
-    next_intron VARCHAR(255) NOT NULL,
-    ss_score3 DOUBLE PRECISION NOT NULL,
-    ss_score5 DOUBLE PRECISION NOT NULL,
-    phastcons_100 VARCHAR(255) NOT NULL,
-    ultra_in VARCHAR(255) NOT NULL,
-    prime3 VARCHAR(255) NOT NULL,
-    prime5 VARCHAR(255) NOT NULL,
-    cassette VARCHAR(255) NOT NULL,
-    const VARCHAR(255) NOT NULL,
-    similarity_score VARCHAR(255) NOT NULL,
-    phylo_p DOUBLE PRECISION NOT NULL,
-    gene_phylo_p VARCHAR(255) NOT NULL,
-    genes_ultra VARCHAR(255) NOT NULL
-);
-EOF
+    echo "Table rna_exonconservation does not exist."
 fi
 
 echo "Collecting static files..."
