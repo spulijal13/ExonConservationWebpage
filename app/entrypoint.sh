@@ -30,10 +30,10 @@ SELECT COUNT(*) FROM rna_exonconservation;
 EOF
 )
 
-# Remove whitespace from TABLE_COUNT
+
 TABLE_COUNT=$(echo "$TABLE_COUNT" | tr -d '[:space:]')
 
-# ✅ If TABLE_COUNT is 0 (empty table), run `import_data.py`
+# If TABLE_COUNT is 0 (empty table), run `import_data.py`
 if [[ "$TABLE_COUNT" -eq "0" ]]; then
     echo "rna_exonconservation is empty. Running import_data.py..."
     python /app/data/import_data.py
