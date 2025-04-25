@@ -44,3 +44,6 @@ docker-compose.override.yml
 # PostgreSQL Data (if using local PG data directory)
 pgdata/
 *.dump
+
+.env.prod
+.env.prod.db
