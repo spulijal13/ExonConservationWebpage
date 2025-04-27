@@ -26,7 +26,8 @@ def ensure_table_creation(sender, **kwargs):
         if not exists:
             cursor.execute("""
                             CREATE TABLE rna_exonconservation (
-    exon_id VARCHAR(255) PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
+    exon_id VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255),
     chrm VARCHAR(50),
     start_position INTEGER,
