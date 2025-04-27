@@ -38,6 +38,12 @@ else
   echo "→ data already present; skipping import"
 fi
 
+echo "→ apply migrations"
+python manage.py migrate --no-input
+
+echo "→ collect static"
+python manage.py collectstatic --no-input --clear
+
 # 4) Launch Gunicorn on the Render-provided port
 exec gunicorn exon.wsgi:application \
   --bind 0.0.0.0:"${PORT:-8000}" \

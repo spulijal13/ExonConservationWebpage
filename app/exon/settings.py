@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "whitecoise.runserver_nostatic",
     "django.contrib.staticfiles",
     "rna",
     "import_export",
