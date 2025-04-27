@@ -1,5 +1,7 @@
 Django==4.2.3
+whitenoise==6.5.0
 gunicorn==21.2.0
 psycopg2-binary==2.9.6
 django-import_export
 pandas
+dj-database-url>=0.5.0

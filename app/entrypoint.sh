@@ -1,46 +1,44 @@
 #!/bin/sh
+set -e
 
-cd /app || exit
-
-echo "Applying database migrations..."
-python manage.py migrate
-
-echo "Collecting static files"
-python manage.py collectstatic --noinput
-
-echo "starting django server"
-exec python manage.py runserver 0.0.0.0:8000
-
-echo "Initializing something"
-python manage.py migrate
-
-if [ "$DATABASE" = "postgres" ]
-then
-    echo "Waiting for postgres..."
-
-    while ! nc -z $SQL_HOST $SQL_PORT; do
-      sleep 0.1
-    done
-
-    echo "PostgreSQL started"
-fi
-
-TABLE_COUNT=$(python /app/manage.py dbshell <<EOF
-SELECT COUNT(*) FROM rna_exonconservation;
-EOF
+# 1) (Optional) wait for Postgres to be ready
+#    Render provides DATABASE_URL; we parse host/port via dj-database-url
+if command -v nc >/dev/null 2>&1 && [ -n "$DATABASE_URL" ]; then
+  echo "Waiting for Postgres..."
+  # extract host/port
+  export PGHOST=$(python - <<PYCODE
+import os, dj_database_url
+print(dj_database_url.parse(os.environ["DATABASE_URL"])["HOST"])
+PYCODE
 )
-
-
-TABLE_COUNT=$(echo "$TABLE_COUNT" | tr -d '[:space:]')
-
-# If TABLE_COUNT is 0 (empty table), run `import_data.py`
-if [[ "$TABLE_COUNT" -eq "0" ]]; then
-    echo "rna_exonconservation is empty. Running import_data.py..."
-    python /app/data/import_data.py
-else
-    echo "rna_exonconservation already has data. Skipping import_data.py."
+  export PGPORT=$(python - <<PYCODE
+import os, dj_database_url
+print(dj_database_url.parse(os.environ["DATABASE_URL"])["PORT"] or 5432)
+PYCODE
+)
+  while ! nc -z "$PGHOST" "$PGPORT"; do
+    sleep 0.1
+  done
+  echo "Postgres is up"
 fi
 
-exec "$@"
+# 2) Apply migrations & collectstatic
+echo "→ apply migrations"
+python manage.py migrate --no-input
 
-python manage.py migrate
+echo "→ collect static"
+python manage.py collectstatic --no-input --clear
+
+# 3) (Optional) seed your table if empty
+TABLE_COUNT=$(printf "SELECT COUNT(*) FROM rna_exonconservation;\n" | python manage.py dbshell | tr -dc '0-9')
+if [ "$TABLE_COUNT" -eq 0 ]; then
+  echo "→ import_data.py (first-time load)"
+  python data/import_data.py
+else
+  echo "→ data already present; skipping import"
+fi
+
+# 4) Launch Gunicorn on the Render-provided port
+exec gunicorn exon.wsgi:application \
+  --bind 0.0.0.0:"${PORT:-8000}" \
+  --workers 3
