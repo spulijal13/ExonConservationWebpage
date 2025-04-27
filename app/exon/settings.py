@@ -76,7 +76,16 @@ WSGI_APPLICATION = "exon.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+"""DATABASES = {
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.environ.get("SQL_DATABASE", "dev_db"),
+        "USER": os.environ.get("SQL_USER", "sohump"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "sohump"),
+        "HOST": os.environ.get("SQL_HOST", "db"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
+    }
+}"""
 DATABASES = {
     "default": {
         dj_database_url.config(default=os.environ.get("DATABASE_URL"))
