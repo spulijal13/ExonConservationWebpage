@@ -26,7 +26,7 @@ RUN pip install --upgrade pip \
 
 # 6. Copy code + entrypoint
 COPY . .
-RUN chmod +x entrypoint.sh
+RUN chmod +x app/entrypoint.sh
 
 # 7. Expose port & entrypoint
 EXPOSE 8000
