@@ -9,8 +9,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 # 3. Install system deps
 RUN apt-get update \
- && apt-get install -y --no-install-recommends netcat gcc postgresql-client \
- && rm -rf /var/lib/apt/lists/*
++  && apt-get install -y --no-install-recommends netcat-openbsd gcc postgresql-client \
+   && rm -rf /var/lib/apt/lists/*
 
 # 4. Set working dir
 WORKDIR /app
