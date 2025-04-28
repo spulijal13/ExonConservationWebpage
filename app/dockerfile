@@ -20,13 +20,13 @@ RUN apt-get update \
 WORKDIR /app
 
 # 5. Install Python deps
-COPY app/requirements.txt .
+COPY requirements.txt .
 RUN pip install --upgrade pip \
  && pip install --no-cache-dir -r requirements.txt
 
 # 6. Copy code + entrypoint
 COPY . .
-RUN chmod +x app/entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 # 7. Expose port & entrypoint
 EXPOSE 8000
