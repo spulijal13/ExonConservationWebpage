@@ -24,6 +24,7 @@ PYCODE
 fi
 
 # 2) Run migrations
+python manage.py makemigrations
 echo "→ applying migrations"
 python manage.py migrate --no-input
 
