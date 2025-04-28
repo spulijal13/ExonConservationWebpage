@@ -3,6 +3,9 @@ set -e
 
 cd /app
 
+python manage.py makemigrations
+python manage.py migrate 
+
 # 1) Wait for Postgres (if DATABASE_URL is set)
 if command -v nc >/dev/null 2>&1 && [ -n "$DATABASE_URL" ]; then
   echo "Waiting for Postgres..."
