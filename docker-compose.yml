@@ -2,6 +2,7 @@ services:
   web:
     entrypoint: ['/usr/src/app/entrypoint.sh']
     build: ./app
+    image: spulijal13/exonconservationwebpage
     volumes:
       - ./app/:/usr/src/app/
     ports:

@@ -77,7 +77,7 @@ WSGI_APPLICATION = "exon.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-on_system = False
+on_system = os.environ.get("SOMETHING")
 if on_system:
     DATABASES = {
         "default": {
