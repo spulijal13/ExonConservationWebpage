@@ -1,0 +1,11 @@
+services:
+ - type: web
+   name: ExonConservation
+   runtime: python
+   buildCommand: "./build.sh"
+   startCommand: "gunicorn exon.wsgi:application"
+   envVars:
+    - key: DJANGO_SETTINGS_MODULE
+      value: exon.settings
+    - key: PYTHON_VERSION
+      value: 3.11
