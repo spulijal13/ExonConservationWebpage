@@ -11,7 +11,7 @@ import csv
 
 
 
-csv_file = 'data/Exon_Conservation_Share_Split.csv'
+csv_file = 'data/Exon_Conservation_Data_all.csv'
 
 with open(csv_file, 'r') as file:
     

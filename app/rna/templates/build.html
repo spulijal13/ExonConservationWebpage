@@ -155,7 +155,13 @@
     <h3>Download Results</h3>
     <form method="GET">
         {{ download_form.as_p }}
-        <input type="hidden" name="chromosome" value="{{ request.GET.chromosome }}">
+
+    {% for key, value in request.GET.items %}
+        {% if key != 'row_ids' and key != 'file_format' %}
+            <input type='hidden' name="{{ key }}" value="{{ value }}">
+        {% endif %}
+    {% endfor %}
+    <input type="hidden" name="chromosome" value="{{ request.GET.chromosome }}">
     <input type="hidden" name="gene_name" value="{{ request.GET.gene_name }}">
     <input type="hidden" name="start_position" value="{{ request.GET.start_position }}">
     <input type="hidden" name="end_position" value="{{ request.GET.end_position }}">
@@ -182,6 +188,7 @@
          <table>
             <thead>
                 <tr>
+                    <th>Select</th>
                     <th>ID</th>
                     <th>Gene Name</th>
                     <th>Chromosome</th>

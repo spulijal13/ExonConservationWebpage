@@ -45,7 +45,7 @@ def exon_search(request):
             if chromosome:
                 query = query.filter(chrm=chromosome)
             if gene_name:
-                query = query.filter(name=gene_name)
+                query = query.filter(name__icontains=gene_name)
             if start_position:
                 query = query.filter(start_position__gte=start_position)
             if end_position:
@@ -122,6 +122,7 @@ def exon_search(request):
                     query = query.filter(ultra_in__lte=ultra_in)
             exons = query
 
+    
     # File Download Handling
     if 'file_format' in request.GET and exons.exists():
         file_format = request.GET.get('file_format')
