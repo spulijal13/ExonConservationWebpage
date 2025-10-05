@@ -6,7 +6,7 @@ class ExonConservation(models.Model):
     The model that interacts with the database of information so that Django can see and use it
     '''
     
-    exon_id = models.CharField(max_length=255)
+    exon_id = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)
     chrm = models.CharField(max_length=50)
     start_position = models.IntegerField()
