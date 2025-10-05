@@ -80,7 +80,7 @@ WSGI_APPLICATION = "exon.wsgi.application"
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://sohump:xELfIkdgHuIyI6zTbtt3HAxXuppXbXEG@dpg-d0hal4juibrs739i7fd0-a.oregon-postgres.render.com/dev_db_4evi'
+        default='postgresql://sohump:h4oxtaSJPDTUY2ZWPi8L5xciycSMwKRQ@dpg-d3gri2p5pdvs73eokge0-a.oregon-postgres.render.com/dev_db_5lc8'
     )
 }
 
