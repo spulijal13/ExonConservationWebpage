@@ -1,4 +1,4 @@
-### Exon Conservation Webpage
+## Exon Conservation Webpage
 
 A searchable web application for exploring exon-level conservation, splice site scores, intron context, and phylogenetic metrics across multiple genes and chromosomes.
 
