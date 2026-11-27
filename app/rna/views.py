@@ -1,25 +1,28 @@
 from django.shortcuts import render
-from .models import ExonConservation
-from .forms import SearchForm, DownloadData
+from .datasets import ASSEMBLIES
+from .query_cache import cached_exons
+from .forms import SearchForm, DownloadData, COLUMN_CHOICES
 import csv
-from django.db.models import IntegerField, F, Value
-from django.db.models.functions import Cast, Substr, StrIndex
-from django.http import HttpResponse
+from django.http import StreamingHttpResponse, JsonResponse, HttpResponseBadRequest
 
 def exon_search(request):
     """
     View function for searching exon data only when the user presses the search button.
     """
-    exons = ExonConservation.objects.none()  # Initialize with an empty QuerySet
-    form = SearchForm(request.GET or None)
+    assembly = request.GET.get('assembly', 'hg19')
+    if assembly not in ASSEMBLIES:
+        return HttpResponseBadRequest('Unknown genome assembly.')
+    model = ASSEMBLIES[assembly]
+    exons = model.objects.none()
+    form = SearchForm(request.GET or None, assembly=assembly)
     download_form = DownloadData(request.GET or None)
 
     if request.GET:  # Check if the request has GET parameters
         if form.is_valid():
-            print("Form Data:", form.cleaned_data)  # Debugging line
+
 
             # Start filtering from all ExonConservation objects
-            query = ExonConservation.objects.all()
+            query = model.objects.all()
             
             chromosome = form.cleaned_data.get('chromosome')
             gene_name = form.cleaned_data.get('gene_name')
@@ -46,11 +49,11 @@ def exon_search(request):
                 query = query.filter(chrm=chromosome)
             if gene_name:
                 query = query.filter(name__icontains=gene_name)
-            if start_position:
+            if start_position is not None:
                 query = query.filter(start_position__gte=start_position)
-            if end_position:
+            if end_position is not None:
                 query = query.filter(end_position__lte=end_position)
-            if length:
+            if length is not None:
                 if length_comparison == 'eq':
                     query = query.filter(length=length)
                 elif length_comparison == 'gt':
@@ -61,9 +64,9 @@ def exon_search(request):
                     query = query.filter(length__gte=length)
                 elif length_comparison == 'lte':
                     query = query.filter(length__lte=length)
-            if exon_number:
-                query = query.filter(exon_number__regex=r'^' + str(exon_number) + r'_')
-            if total_exon:
+            if exon_number is not None:
+                query = query.filter(exon_number__regex=r'^' + str(exon_number) + r'(_|$)')
+            if total_exon is not None:
                 if total_exon_comparison == 'eq':
                     query = query.filter(total_exon=total_exon)
                 elif total_exon_comparison == 'gt':
@@ -76,7 +79,7 @@ def exon_search(request):
                     query = query.filter(total_exon__lte=total_exon)
             if exon_type:
                 query = query.filter(exon_type=exon_type)
-            if splice_site_3:
+            if splice_site_3 is not None:
                 if splice_site_3_comparison == 'eq':
                     query = query.filter(ss_score3=splice_site_3)
                 elif splice_site_3_comparison == 'gt':
@@ -87,7 +90,7 @@ def exon_search(request):
                     query = query.filter(ss_score3__gte=splice_site_3)
                 elif splice_site_3_comparison == 'lte':
                     query = query.filter(ss_score3__lte=splice_site_3)
-            if splice_site_5:
+            if splice_site_5 is not None:
                 if splice_site_5_comparison == 'eq':
                     query = query.filter(ss_score5=splice_site_5)
                 elif splice_site_5_comparison == 'gt':
@@ -98,7 +101,7 @@ def exon_search(request):
                     query = query.filter(ss_score5__gte=splice_site_5)
                 elif splice_site_5_comparison == 'lte':
                     query = query.filter(ss_score5__lte=splice_site_5)
-            if phylo_p:
+            if phylo_p is not None:
                 if phylo_p_comparison == 'eq':
                     query = query.filter(phylo_p=phylo_p)
                 elif phylo_p_comparison == 'gt':
@@ -109,7 +112,7 @@ def exon_search(request):
                     query = query.filter(phylo_p__gte=phylo_p)
                 elif phylo_p_comparison == 'lte':
                     query = query.filter(phylo_p__lte=phylo_p)
-            if ultra_in:
+            if ultra_in is not None:
                 if ultra_in_comparison == 'eq':
                     query = query.filter(ultra_in=ultra_in)
                 elif ultra_in_comparison == 'gt':
@@ -120,53 +123,71 @@ def exon_search(request):
                     query = query.filter(ultra_in__gte=ultra_in)
                 elif ultra_in_comparison == 'lte':
                     query = query.filter(ultra_in__lte=ultra_in)
+            hg38_ultra = form.cleaned_data.get('ultrain_score_20pct_pm3')
+            if hg38_ultra is not None:
+                comparison = form.cleaned_data['ultrain_score_20pct_pm3_comparison']
+                lookup = 'exact' if comparison == 'eq' else comparison
+                query = query.filter(**{'ultrain_score_20pct_pm3__' + lookup: hg38_ultra})
             exons = query
 
     
-    # File Download Handling
-    if 'file_format' in request.GET and exons.exists():
-        file_format = request.GET.get('file_format')
-        
-        if file_format == 'csv':
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="data.csv"'
-            
-            writer = csv.writer(response)
-            writer.writerow([
-                'id', 'name', 'chromosome', 'start', 'end', 'gene info', 'strand',
-                'length', 'exon_number', 'exon_type', 'previous_intron', 'next_intron',
-                "3'_splice_site", "5'_splice_site", 'phastcons100', 'ultra_intron', 
-                "3'", "5'", 'cassette', 'constant', 'similarity_score', 
-                'phylo_p_score', 'gene_phylo_p_score', 'gene_ultra_score'
-            ])
-            
-            for exon in exons:
-                writer.writerow([
-                    exon.exon_id, exon.name, exon.chrm, exon.start_position, exon.end_position, exon.info,
-                    exon.strand, exon.length, exon.exon_number, exon.exon_type, 
-                    exon.previous_intron, exon.next_intron, exon.ss_score3, exon.ss_score5,
-                    exon.phastcons_100, exon.ultra_in, exon.prime3, exon.prime5, 
-                    exon.cassette, exon.const, exon.similarity_score, 
-                    exon.phylo_p, exon.gene_phylo_p, exon.genes_ultra
-                ])
-            
-            return response
-        
-        elif file_format == 'txt':
-            response = HttpResponse(content_type='text/plain')
-            response['Content-Disposition'] = 'attachment; filename="data.txt"'
-            
-            for exon in exons:
-                response.write(f"{exon.exon_id}, {exon.name}, {exon.chrm}, {exon.start_position}, {exon.end_position}, {exon.info}, "
-                               f"{exon.strand}, {exon.length}, {exon.exon_number}, {exon.exon_type}, "
-                               f"{exon.previous_intron}, {exon.next_intron}, {exon.ss_score3}, {exon.ss_score5}, "
-                               f"{exon.phastcons_100}, {exon.ultra_in}, {exon.prime3}, {exon.prime5}, "
-                               f"{exon.cassette}, {exon.const}, {exon.similarity_score}, {exon.phylo_p}, "
-                               f"{exon.gene_phylo_p}, {exon.genes_ultra}\n")
-            return response
-    
+    exons = exons.order_by('exon_id')
+    selected = form.cleaned_data.get('columns', []) if form.is_bound else [name for name, _ in form.fields['columns'].choices]
+    fields = [name for name, _ in COLUMN_CHOICES if name in selected]
+    headers = [label for name, label in COLUMN_CHOICES if name in selected]
+    file_format = request.GET.get('download_format') if 'download' in request.GET else request.GET.get('file_format')
+    if file_format in ('csv', 'txt') and form.is_valid():
+
+        class Echo:
+            def write(self, value):
+                return value
+
+        def rows():
+            writer = csv.writer(Echo())
+            yield writer.writerow(fields)
+            for row in exons.values_list(*fields).iterator(chunk_size=2000):
+                yield writer.writerow(row)
+
+        response = StreamingHttpResponse(
+            rows(), content_type='text/csv' if file_format == 'csv' else 'text/plain'
+        )
+        response['Content-Disposition'] = f'attachment; filename="{assembly}_exon_conservation.{file_format}"'
+        return response
+
+    # SQL and parameters distinguish filters and prevent different searches sharing rows.
+    # Empty/unbound/invalid searches bypass caching entirely.
+    can_cache = form.is_bound and form.is_valid() and bool(fields)
+    revision = form.cache_revision if can_cache else None
+    identity = exons.query.sql_with_params() if can_cache else None
+
+    def result_rows(offset, size):
+        return cached_exons(assembly, revision, 'rows', [identity, fields, offset, size],
+                           lambda: list(exons.values_list(*fields)[offset:offset + size]))
+
+    # Keep both the response and browser table bounded, even for all exons.
+    window_size = 200
+    if request.GET.get('results_window') == '1':
+        if not form.is_valid():
+            return JsonResponse({'error': 'Invalid search filters or columns.'}, status=400)
+        try:
+            offset = int(request.GET.get('offset', '0'))
+            if offset < 0 or offset > 2147483647:
+                raise ValueError
+        except ValueError:
+            return JsonResponse({'error': 'Invalid row offset.'}, status=400)
+        return JsonResponse({
+            'rows': result_rows(offset, window_size),
+        })
+
+    total = cached_exons(assembly, revision, 'count', identity, exons.count) if fields else 0
+    initial_rows = result_rows(0, window_size) if fields else []
     return render(request, 'build.html', {
-        'form': form, 
-        'exons': exons,  # Will be empty until search is performed
-        'download_form': download_form
+        'form': form,
+        'assembly': assembly,
+        'assemblies': list(ASSEMBLIES),
+        'exons': initial_rows,
+        'result_count': total,
+        'results_data': {'rows': initial_rows, 'total': total, 'columns': len(fields)},
+        'headers': headers,
+        'download_form': download_form,
     })

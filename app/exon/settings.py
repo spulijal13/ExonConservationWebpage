@@ -20,12 +20,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY") or os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DEBUG", default=0))
+DEBUG = os.environ.get("DEBUG", "false").lower() in ("1", "true", "yes")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1","[::1]"]
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get(
+    "DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1]"
+).split(",") if host.strip()]
 
 
 # Application definition
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.postgres",
     "rna",
     "import_export",
 ]
@@ -135,3 +138,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Both assemblies use this bounded cache. Entries are small windows, never full exports.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'exon-query-cache',
+        'TIMEOUT': 300,
+        'OPTIONS': {'MAX_ENTRIES': 128},
+    },
+}

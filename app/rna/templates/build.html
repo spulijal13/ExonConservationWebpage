@@ -7,247 +7,62 @@
 
 {% block content %}
     <h1> Search </h1>
+    {{ form.errors }}
     <form method="GET">
-        <div style="display: flex">
-            <div>
-                <label for="{{ form.chromosome.id_for_label }}">Chromsome</label>
-                {{ form.chromosome }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex">
-            <div>
-                <label for="{{ form.gene_name.id_for_label }}">Gene Name</label>
-                {{ form.gene_name }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex">
-            <div>
-                <label for="{{ form.start_position.id_for_label }}">Start Position</label>
-                {{ form.start_position }}
-            </div>
-        </div> 
-
-        <br>
-
-        <div style="display: flex">
-            <div>
-                <label for="{{ form.end_position.id_for_label }}">End Position</label>
-                {{ form.end_position }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <div>
-                <label for="{{ form.length.id_for_label }}">Exon Length:</label>
-                {{ form.length }}
-            </div>
-            
-            <div>
-                {{ form.length_comparison }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex">
-            <div>
-                <label for="{{ form.exon_number.id_for_label }}">Exon Number</label>
-                {{ form.exon_number }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <div>
-                <label for="{{ form.total_exon.id_for_label }}">Total Exons</label>
-                {{ form.total_exon }}
-            </div>
-            
-            <div>
-                {{ form.total_exon_comparison }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex">
-            <div>
-                <label for="{{ form.exon_type.id_for_label }}">Exon Type</label>
-                {{ form.exon_type }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <div>
-                <label for="{{ form.splice_site_3.id_for_label }}">3' Splice Site Score</label>
-                {{ form.splice_site_3 }}
-            </div>
-            
-            <div>
-                {{ form.splice_site_3_comparison }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <div>
-                <label for="{{ form.splice_site_5.id_for_label }}">5' Splice Site Score</label>
-                {{ form.splice_site_5 }}
-            </div>
-            
-            <div>
-                {{ form.splice_site_5_comparison }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <div>
-                <label for="{{ form.splice_site_3.id_for_label }}">3' Splice Site Score</label>
-                {{ form.splice_site_3 }}
-            </div>
-            
-            <div>
-                {{ form.splice_site_3_comparison }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <div>
-                <label for="{{ form.phylo_p.id_for_label }}">Phylo P Score</label>
-                {{ form.phylo_p }}
-            </div>
-            
-            <div>
-                {{ form.phylo_p_comparison }}
-            </div>
-        </div>
-
-        <br>
-
-        <div style="display: flex; gap: 10px; align-items: center;">
-            <div>
-                <label for="{{ form.ultra_in.id_for_label }}">Ultra Intron Score</label>
-                {{ form.ultra_in }}
-            </div>
-            
-            <div>
-                {{ form.ultra_in_comparison }}
-            </div>
-        </div>
-        <button type="submit">Search</button>
-    </form>
-    <h3>Download Results</h3>
-    <form method="GET">
-        {{ download_form.as_p }}
-
-    {% for key, value in request.GET.items %}
-        {% if key != 'row_ids' and key != 'file_format' %}
-            <input type='hidden' name="{{ key }}" value="{{ value }}">
-        {% endif %}
-    {% endfor %}
-    <input type="hidden" name="chromosome" value="{{ request.GET.chromosome }}">
-    <input type="hidden" name="gene_name" value="{{ request.GET.gene_name }}">
-    <input type="hidden" name="start_position" value="{{ request.GET.start_position }}">
-    <input type="hidden" name="end_position" value="{{ request.GET.end_position }}">
-    <input type="hidden" name="length" value="{{ request.GET.length }}">
-    <input type="hidden" name="length_comparison" value="{{ request.GET.length_comparison }}">
-    <input type="hidden" name="exon_number" value="{{ request.GET.exon_number }}">
-    <input type="hidden" name="total_exon" value="{{ request.GET.total_exon }}">
-    <input type="hidden" name="total_exon_comparison" value="{{ request.GET.total_exon_comparison }}">
-    <input type="hidden" name="exon_type" value="{{ request.GET.exon_type }}">
-    <input type="hidden" name="splice_site_3" value="{{ request.GET.splice_site_3 }}">
-    <input type="hidden" name="splice_site_3_comparison" value="{{ request.GET.splice_site_3_comparison }}">
-    <input type="hidden" name="splice_site_5" value="{{ request.GET.splice_site_5 }}">
-    <input type="hidden" name="splice_site_5_comparison" value="{{ request.GET.splice_site_5_comparison }}">
-    <input type="hidden" name="phylo_p" value="{{ request.GET.phylo_p }}">
-    <input type="hidden" name="phylo_p_comparison" value="{{ request.GET.phylo_p_comparison }}">
-    <input type="hidden" name="ultra_in" value="{{ request.GET.ultra_in }}">
-    <input type="hidden" name="ultra_in_comparison" value="{{ request.GET.ultra_in_comparison }}">
-    <button type="submit">Download</button>
-    </form>
-
-    <div class='table-container'>
-    {% if exons %}
-        <p> Data is valid </p>
-         <table>
-            <thead>
-                <tr>
-                    <th>Select</th>
-                    <th>ID</th>
-                    <th>Gene Name</th>
-                    <th>Chromosome</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th>Info</th>
-                    <th>Strand</th>
-                    <th>Length</th>
-                    <th>Exon Number</th>
-                    <th>Total Exon</th>
-                    <th>Exon Type</th>
-                    <th>Previous Intron</th>
-                    <th>Next Intron</th>
-                    <th>3' Splice Site Score</th>
-                    <th>5' Splice Site Score</th>
-                    <th>Phastcons100</th>
-                    <th>Ultra In</th>
-                    <th>3'</th>
-                    <th>5'</th>
-                    <th>Cassette</th>
-                    <th>Constant</th>
-                    <th>Similarity Score</th>
-                    <th>Phylo P</th>
-                    <th>Gene Phylo P</th>
-                    <th>Genes Ultra</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for exon in exons %}
-                <tr>
-                    <td>{{ exon.exon_id }}</td>
-                    <td>{{ exon.name }}</td>
-                    <td>{{ exon.chrm }}</td>
-                    <td>{{ exon.start_position }}</td>
-                    <td>{{ exon.end_position }}</td>
-                    <td>{{ exon.info }}</td>
-                    <td>{{ exon.strand }}</td>
-                    <td>{{ exon.length }}</td>
-                    <td>{{ exon.exon_number }}</td>
-                    <td>{{ exon.total_exon }}</td>
-                    <td>{{ exon.exon_type }}</td>
-                    <td>{{ exon.previous_intron }}</td>
-                    <td>{{ exon.next_intron }}</td>
-                    <td>{{ exon.ss_score3 }}</td>
-                    <td>{{ exon.ss_score5 }}</td>
-                    <td>{{ exon.phastcons_100 }}</td>
-                    <td>{{ exon.ultra_in }}</td>
-                    <td>{{ exon.prime3 }}</td>
-                    <td>{{ exon.prime5 }}</td>
-                    <td>{{ exon.cassette }}</td>
-                    <td>{{ exon.const }}</td>
-                    <td>{{ exon.similarity_score }}</td>
-                    <td>{{ exon.phylo_p }}</td>
-                    <td>{{ exon.gene_phylo_p }}</td>
-                    <td>{{ exon.genes_ultra }}</td>
-                </tr>
+        <label for="genome-assembly">Genome Assembly</label>
+        <select name="assembly" id="genome-assembly" onchange="this.form.requestSubmit()">
+            {% for value in assemblies %}
+            <option value="{{ value }}" {% if value == assembly %}selected{% endif %}>{{ value }}</option>
             {% endfor %}
+        </select>
+        <noscript><button type="submit">Load assembly</button></noscript>
+    </form>
+    <form method="GET">
+        <input type="hidden" name="assembly" value="{{ assembly }}">
+        {% for field, comparison in form.filter_rows %}
+        <div style="display: flex; gap: 10px; align-items: center; margin: 1rem 0;">
+            <div>{{ field.label_tag }} {{ field }}</div>
+            {% if comparison %}<div>{{ comparison }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        <fieldset style="margin: 1rem 0;">
+            <legend>Columns</legend>
+            <input type="hidden" name="columns_present" value="1">
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem 1rem;">
+                {% for column in form.columns %}
+                    <label style="white-space: nowrap;">{{ column.tag }} {{ column.choice_label }}</label>
+                {% endfor %}
+            </div>
+        </fieldset>
+        <button type="submit">Search</button>
+        <h3>Download Results</h3>
+        <label for="id_download_format">Choose Format:</label>
+        <select name="download_format" id="id_download_format">
+            <option value="csv">CSV</option>
+            <option value="txt">TXT</option>
+        </select>
+        <button type="submit" name="download" value="1">Download</button>
+    </form>
+
+    {% if exons %}
+    <p>{{ result_count }} matching exons. Scroll the table to browse.</p>
+    <p id="results-status" role="status" aria-live="polite"></p>
+    {{ results_data|json_script:"results-data" }}
+    {% endif %}
+    <div class="table-container" id="exon-results">
+    {% if exons %}
+        <table id="results-table">
+            <colgroup>{% for header in headers %}<col>{% endfor %}</colgroup>
+            <thead><tr>
+                {% for header in headers %}<th>{{ header }}</th>{% endfor %}
+            </tr></thead>
+            <tbody>
+                {% for row in exons %}
+                <tr>{% for value in row %}<td>{{ value|default_if_none:"" }}</td>{% endfor %}</tr>
+                {% endfor %}
             </tbody>
         </table>
+        <noscript>Enable JavaScript to browse beyond the first 200 rows. Downloads include all matches.</noscript>
     {% else %}
         <p>No results found</p>
     {% endif %}

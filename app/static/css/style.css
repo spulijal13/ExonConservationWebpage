@@ -248,3 +248,30 @@ table th {
 .table-container tbody tr:nth-child(even) {
     background-color: #f9f9f9;
 }
+/* A fixed row height lets the table browse large results without millions of cells. */
+#exon-results {
+    padding: 0;
+    overflow-anchor: none;
+}
+#results-table {
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+}
+#results-table col { width: 180px; }
+#results-table th, #results-table td {
+    height: 32px;
+    line-height: 20px;
+    padding: 5px 8px;
+    border-width: 0 1px 1px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#results-table .results-spacer td {
+    padding: 0;
+    border: 0;
+    line-height: 0;
+    background: white;
+}
