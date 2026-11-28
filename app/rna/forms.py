@@ -53,7 +53,7 @@ class SearchForm(forms.Form):
     start_position = forms.IntegerField(required=False, label='Starting Position')
     end_position = forms.IntegerField(required=False, label="Ending Position")
     length = forms.IntegerField(required=False, label="Exon Length")
-    length_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False, label='Length Comaparison')
+    length_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False, label='Length Comparison')
     exon_number = forms.IntegerField(required=False, label="Exon Number")
     total_exon = forms.IntegerField(required=False, label="Total Exon Number (in gene)")
     total_exon_comparison = forms.ChoiceField(choices=COMPARISON_CHOICES, required=False, label='Total Exon Comparison')
@@ -108,6 +108,14 @@ class SearchForm(forms.Form):
                 values = model.objects.exclude(**{column + '__isnull': True}).exclude(**{column: ''}).values_list(column, flat=True).distinct()
                 choices = cached_exons(assembly, self.cache_revision, 'choices', column, lambda: sorted(values))
                 self.fields[field].choices = list(self.fields[field].choices) + [(value, value) for value in choices]
+        for field in FILTER_FIELDS:
+            comparison = field + '_comparison'
+            if comparison in self.fields:
+                self.fields[comparison].label = self.fields[field].label + ' comparison'
+        for name, field in self.fields.items():
+            if name != 'columns':
+                field.widget.attrs['aria-describedby'] = f'id_{name}_errors'
+        self.fields['columns'].widget.attrs['aria-describedby'] = 'columns-help id_columns_errors'
         self.filter_rows = [
             (self[field], self[field + '_comparison'] if field + '_comparison' in self.fields else None)
             for field in FILTER_FIELDS if field in self.fields

@@ -24,9 +24,7 @@ config/settings/dev.py
 logs/
 debug.log
 
-# Migrations (keep the __init__.py but ignore others if needed)
-**/migrations/*.py
-!**/migrations/__init__.py
+# Django migrations are versioned.
 
 # Static and media files (if collected outside the repo)
 staticfiles/

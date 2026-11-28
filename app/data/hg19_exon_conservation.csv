@@ -1,4 +1,4 @@
-,exon_id,name,chrm,start,end,info,strand,length,exon_number,exon_type,previous_intron,next_intron,ss_score3,ss_score5,phastcons_100,ultra_in,prime3,prime5,cassette,const,similarity_score,phylo_p,gene_phylo_p,genes_ultra,total_exon
+row_id,exon_id,name,chrm,start_position,end_position,info,strand,length,exon_number,exon_type,previous_intron,next_intron,ss_score3,ss_score5,phastcons_100,ultra_in,prime3,prime5,cassette,const,similarity_score,phylo_p,gene_phylo_p,genes_ultra,total_exon
 0,region334464,MARCHF1,chr4,164445449,164450198,NM_001166373_exon_1_8_chr4_164445450_r,-,4749,8_8,Last_Exon,16549.0,,9.77,-10.49,0.156339,0,0,0,0,0,0.7680172,0.335246,3.379476,40.5,8
 1,region325023,MARCHF1,chr4,164466747,164466895,NM_001166373_exon_2_8_chr4_164466748_r,-,148,7_8,Internal_Exon,40005.0,16549.0,6.55,9.48,0.830816,63,1,0,0,0,0.5776177,4.05566,3.379476,40.5,8
 2,region325022,MARCHF1,chr4,164506900,164507081,NM_001166373_exon_3_8_chr4_164506901_r,-,181,6_8,Internal_Exon,27384.0,40005.0,10.26,8.04,0.876414,69,0,0,0,1,0.3196933,5.30551,3.379476,40.5,8

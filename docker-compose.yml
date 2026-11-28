@@ -1,15 +1,25 @@
 services:
   web:
-    entrypoint: ['/usr/src/app/entrypoint.sh']
+    entrypoint: ['sh', '/app/entrypoint.sh']
     build: ./app
     volumes:
-      - ./app/:/usr/src/app/
+      - ./app/:/app/
     ports:
       - 8000:8000
     env_file:
       - ./.env.dev
+    environment:
+      DEBUG: "true"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,[::1],0.0.0.0"
+      SQL_ENGINE: django.db.backends.postgresql
+      SQL_HOST: db
+      SQL_PORT: "5432"
+      SQL_DATABASE: dev_db
+      SQL_USER: sohump
+      SQL_PASSWORD: sohump
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - my_network
 
@@ -25,6 +35,11 @@ services:
       - POSTGRES_USER=sohump
       - POSTGRES_PASSWORD=sohump
       - POSTGRES_DB=dev_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sohump -d dev_db"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
     networks:
       - my_network
 

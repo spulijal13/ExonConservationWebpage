@@ -18,7 +18,7 @@ class ExonTests(TestCase):
         with (Path(__file__).resolve().parents[1] / 'data/hg19_exon_conservation.csv').open() as source:
             cls.source_row = next(csv.DictReader(source))
         values = {
-            field.name: field.to_python(cls.source_row[{'start_position': 'start', 'end_position': 'end'}.get(field.name, field.name)])
+            field.name: field.to_python(cls.source_row[field.name])
             for field in ExonConservation._meta.fields
         }
         for index in range(302):
@@ -108,6 +108,47 @@ class ExonTests(TestCase):
             call_command('import_exons', path=path, stdout=io.StringIO())
             call_command('import_exons', path=path, stdout=io.StringIO())
             self.assertEqual(ExonConservation.objects.count(), 1)
+
+    def test_accessible_controls_and_results(self):
+        from html.parser import HTMLParser
+
+        class Controls(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.labels = set()
+                self.controls = []
+                self.ids = set()
+
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                if 'id' in attrs:
+                    self.ids.add(attrs['id'])
+                if tag == 'label' and 'for' in attrs:
+                    self.labels.add(attrs['for'])
+                if tag == 'select' or (tag == 'input' and attrs.get('type') not in ('hidden', 'checkbox')):
+                    self.controls.append(attrs)
+
+        response = self.client.get('/', {'phylo_p': '0'})
+        parser = Controls()
+        parser.feed(response.content.decode())
+        for control in parser.controls:
+            self.assertIn(control['id'], parser.labels)
+            for reference in control.get('aria-describedby', '').split():
+                self.assertIn(reference, parser.ids)
+        self.assertContains(response, 'Skip to main content')
+        self.assertContains(response, 'scope="col"')
+        self.assertContains(response, 'aria-rowcount="2"')
+        self.assertContains(response, 'aria-rowindex="2"')
+        self.assertContains(response, 'tabindex="0" role="region"')
+        self.assertNotContains(response, 'onchange=')
+
+    def test_accessible_error_feedback(self):
+        response = self.client.get('/', {'length': 'not-a-number'})
+        self.assertContains(response, 'id="error-summary"')
+        self.assertContains(response, 'href="#id_length"')
+        self.assertContains(response, 'aria-invalid="true"')
+        self.assertContains(response, 'id="id_length_errors"')
+
 
 
 class AssemblyTests(TestCase):

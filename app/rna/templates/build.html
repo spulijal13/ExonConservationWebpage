@@ -2,63 +2,83 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    RNA Event
+    Exon conservation search
 {% endblock title %}
 
 {% block content %}
-    <h1> Search </h1>
-    {{ form.errors }}
-    <form method="GET">
+    <h1>Exon conservation search</h1>
+    {% if form.errors %}
+    <section id="error-summary" class="error-summary" role="alert" tabindex="-1" aria-labelledby="error-heading">
+        <h2 id="error-heading">Check your search</h2>
+        <ul>
+        {% for field in form %}{% for error in field.errors %}
+            <li><a href="{% if field.name == 'columns' %}#columns-group{% else %}#{{ field.id_for_label }}{% endif %}">{{ field.label }}: {{ error }}</a></li>
+        {% endfor %}{% endfor %}
+        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+    <form method="GET" aria-label="Select genome assembly">
         <label for="genome-assembly">Genome Assembly</label>
-        <select name="assembly" id="genome-assembly" onchange="this.form.requestSubmit()">
+        <select name="assembly" id="genome-assembly">
             {% for value in assemblies %}
             <option value="{{ value }}" {% if value == assembly %}selected{% endif %}>{{ value }}</option>
             {% endfor %}
         </select>
-        <noscript><button type="submit">Load assembly</button></noscript>
+        <button type="submit">Load assembly</button>
     </form>
-    <form method="GET">
+    <form id="exon-search-form" method="GET" aria-label="Search and download exons">
         <input type="hidden" name="assembly" value="{{ assembly }}">
         {% for field, comparison in form.filter_rows %}
-        <div style="display: flex; gap: 10px; align-items: center; margin: 1rem 0;">
-            <div>{{ field.label_tag }} {{ field }}</div>
-            {% if comparison %}<div>{{ comparison }}</div>{% endif %}
+        <div class="filter-row">
+            <div class="filter-control">{{ field.label_tag }} {{ field }}
+                <div class="field-errors" id="{{ field.auto_id }}_errors">{{ field.errors }}</div>
+            </div>
+            {% if comparison %}<div class="filter-control">
+                {{ comparison.label_tag }} {{ comparison }}
+                <div class="field-errors" id="{{ comparison.auto_id }}_errors">{{ comparison.errors }}</div>
+            </div>{% endif %}
         </div>
         {% endfor %}
-        <fieldset style="margin: 1rem 0;">
+        <fieldset id="columns-group" tabindex="-1" aria-describedby="columns-help id_columns_errors">
             <legend>Columns</legend>
+            <p id="columns-help">Select at least one column for the table and downloads.</p>
+            <div class="field-errors" id="id_columns_errors">{{ form.columns.errors }}</div>
             <input type="hidden" name="columns_present" value="1">
-            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem 1rem;">
+            <div class="column-options">
                 {% for column in form.columns %}
-                    <label style="white-space: nowrap;">{{ column.tag }} {{ column.choice_label }}</label>
+                    <label class="column-option">{{ column.tag }} {{ column.choice_label }}</label>
                 {% endfor %}
             </div>
         </fieldset>
         <button type="submit">Search</button>
-        <h3>Download Results</h3>
-        <label for="id_download_format">Choose Format:</label>
-        <select name="download_format" id="id_download_format">
-            <option value="csv">CSV</option>
-            <option value="txt">TXT</option>
-        </select>
-        <button type="submit" name="download" value="1">Download</button>
     </form>
 
+    <h2 id="results-heading">Results</h2>
     {% if exons %}
-    <p>{{ result_count }} matching exons. Scroll the table to browse.</p>
-    <p id="results-status" role="status" aria-live="polite"></p>
+    <p>{{ result_count }} matching exons in {{ assembly }}.</p>
+    <p id="results-help">Scroll the table to browse.</p>
+    <form id="result-jump" class="result-jump" hidden>
+        <label for="result-number">Go to result</label>
+        <input type="number" id="result-number" min="1" max="{{ result_count }}" value="1" required>
+        <button type="submit">Go</button>
+    </form>
+    <p id="results-status" role="status" aria-live="polite" aria-atomic="true"></p>
+    <button type="button" id="retry-results" hidden>Retry loading rows</button>
     {{ results_data|json_script:"results-data" }}
     {% endif %}
-    <div class="table-container" id="exon-results">
+    <div class="table-container" id="exon-results" {% if exons %}tabindex="0" role="region" aria-labelledby="results-heading" aria-describedby="results-help"{% endif %}>
     {% if exons %}
-        <table id="results-table">
-            <colgroup>{% for header in headers %}<col>{% endfor %}</colgroup>
-            <thead><tr>
-                {% for header in headers %}<th>{{ header }}</th>{% endfor %}
+        <table id="results-table" aria-rowcount="{{ result_count|add:1 }}">
+            <caption class="sr-only">{{ assembly }} exon search results</caption>
+            <colgroup><col class="row-number-column">{% for header in headers %}<col>{% endfor %}</colgroup>
+            <thead><tr aria-rowindex="1">
+                <th scope="col" class="row-number">Row</th>
+                {% for header in headers %}<th scope="col">{{ header }}</th>{% endfor %}
             </tr></thead>
             <tbody>
                 {% for row in exons %}
-                <tr>{% for value in row %}<td>{{ value|default_if_none:"" }}</td>{% endfor %}</tr>
+                <tr aria-rowindex="{{ forloop.counter|add:1 }}"><td class="row-number">{{ forloop.counter }}</td>{% for value in row %}<td>{{ value|default_if_none:"" }}</td>{% endfor %}</tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -67,4 +87,11 @@
         <p>No results found</p>
     {% endif %}
     </div>
+        <h2>Download results</h2>
+        <label for="id_download_format">Choose Format:</label>
+        <select form="exon-search-form" name="download_format" id="id_download_format">
+            <option value="csv">CSV</option>
+            <option value="txt">TXT</option>
+        </select>
+        <button form="exon-search-form" type="submit" name="download" value="1">Download</button>
 {% endblock content %}

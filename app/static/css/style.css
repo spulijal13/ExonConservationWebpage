@@ -275,3 +275,65 @@ table th {
     line-height: 0;
     background: white;
 }
+
+/* Accessible controls, keyboard navigation, and narrow-screen layout. */
+[hidden] { display: none !important; }
+.sr-only, .skip-link:not(:focus) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+.skip-link:focus {
+    display: block;
+    padding: 1rem;
+    background: white;
+    color: #00334d;
+}
+:focus-visible {
+    outline: 3px solid #005fcc;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px white;
+}
+input, select, button { font: inherit; }
+input:not([type="checkbox"]):not([type="hidden"]), select {
+    min-height: 30px;
+    max-width: 100%;
+    padding: 0.15rem 0.4rem;
+    color: #222;
+    background: white;
+    border: 2px solid #66757f;
+    border-radius: 4px;
+}
+button { min-height: 32px; padding: 0.3rem 0.75rem; }
+input[type="checkbox"] { width: 1.25rem; height: 1.25rem; flex-shrink: 0; accent-color: #004466; }
+.filter-row { display: flex; flex-wrap: wrap; gap: 0.4rem 0.75rem; margin: 0.5rem 0; align-items: start; }
+.filter-control { min-width: 0; max-width: 100%; }
+.filter-control input { width: 11rem; }
+.filter-control label { display: block; font-weight: 600; }
+fieldset { min-width: 0; margin: 1rem 0; padding: 1rem; border: 2px solid #66757f; }
+legend { font-weight: 700; padding: 0 0.35rem; }
+.column-options { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
+.column-option { display: flex; align-items: center; gap: 0.5rem; min-height: 32px; padding: 0.15rem; cursor: pointer; }
+.error-summary { margin: 1rem 0; padding: 1rem; border: 3px solid #a11919; }
+.error-summary a, .field-errors { color: #a11919; }
+.error-summary ul, .field-errors ul { padding-left: 1.5rem; }
+[aria-invalid="true"] { border-color: #a11919 !important; }
+.result-jump { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+#result-number { width: 8rem; }
+.table-container { width: 100%; }
+#results-table col { width: 14rem; }
+#results-table td { height: 2.5rem; line-height: 1.5; }
+#results-table th { height: auto; line-height: 1.5; white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+    main { padding: 0.75rem; }
+    .filter-control input, .filter-control select { max-width: 100%; }
+}
+
+/* Display-only position within the filtered results, not a dataset field. */
+#results-table col.row-number-column { width: 4.5rem; }
+#results-table .row-number { text-align: right; font-variant-numeric: tabular-nums; }
