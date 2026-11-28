@@ -1,0 +1,5 @@
+# Upgrade deliberately, resolve the complete lock, and test before deployment.
+Django>=5.2,<5.3
+gunicorn
+psycopg2-binary
+django-import-export

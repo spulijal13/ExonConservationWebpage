@@ -1,4 +1,9 @@
-Django==4.2.3
-gunicorn==21.2.0
-psycopg2-binary==2.9.6
-django-import_export
+# Exact runtime lock resolved for Python 3.10; see requirements.in.
+Django==5.2.19
+asgiref==3.12.1
+diff-match-patch==20241021
+django-import-export==4.4.6
+gunicorn==27.0.1
+psycopg2-binary==2.9.13
+sqlparse==0.6.1
+tablib==3.10.0

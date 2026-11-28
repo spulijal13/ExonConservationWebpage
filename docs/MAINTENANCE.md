@@ -108,8 +108,9 @@ Arrange HTTPS and serve `STATIC_ROOT` through the hosting platform/reverse proxy
 Gunicorn does not serve CSS/JavaScript itself. Index creation can block writes,
 so schedule schema changes appropriately.
 
-Dependency versions are in `app/requirements.txt`; some are unpinned. For an upgrade,
-record the resolved versions and rerun PostgreSQL tests and browser checks before deployment.
+All runtime dependency versions are pinned in `app/requirements.txt`. Resolve upgrades
+from `app/requirements.in` using Python 3.10 and rerun PostgreSQL tests and browser checks.
+For the lab server behind existing Apache, follow [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Optional UCSC utility
 

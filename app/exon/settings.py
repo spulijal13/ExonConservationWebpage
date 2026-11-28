@@ -107,9 +107,26 @@ USE_TZ = True
 
 # Source assets live in static/; collectstatic copies them to STATIC_ROOT.
 
-STATIC_URL = "static/"
+# Apache strips this prefix before proxying; Django restores it in generated URLs.
+FORCE_SCRIPT_NAME = os.environ.get("DJANGO_SCRIPT_NAME", "").rstrip("/") or None
+STATIC_URL = f"{FORCE_SCRIPT_NAME or ''}/static/"
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Enable only behind a proxy that overwrites X-Forwarded-Proto.
+TRUST_PROXY = os.environ.get("DJANGO_TRUST_PROXY", "false").lower() == "true"
+if TRUST_PROXY:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_TRUSTED_ORIGINS = [value.strip() for value in os.environ.get(
+    "DJANGO_CSRF_TRUSTED_ORIGINS", ""
+).split(",") if value.strip()]
+SECURE_SSL_REDIRECT = os.environ.get("DJANGO_SECURE_SSL_REDIRECT", "false").lower() == "true"
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_PATH = f"{FORCE_SCRIPT_NAME or ''}/"
+CSRF_COOKIE_PATH = SESSION_COOKIE_PATH
+SESSION_COOKIE_NAME = "exons_sessionid"
+CSRF_COOKIE_NAME = "exons_csrftoken"
+
+STATIC_ROOT = Path(os.environ.get('DJANGO_STATIC_ROOT', BASE_DIR / 'staticfiles'))
 
 STATICFILES_DIRS = [BASE_DIR / "static" ]
 

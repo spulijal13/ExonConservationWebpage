@@ -60,3 +60,9 @@ the logs. Do not delete data or bypass migrations to make an error disappear.
 
 For code changes, new metrics, deployment, and common errors, see the
 [maintenance guide](docs/MAINTENANCE.md).
+
+## Lab server deployment
+
+For Apache hosting at `/exons/`, use the [server deployment guide](docs/DEPLOYMENT.md)
+and templates in `deploy/`. The runtime is pinned to Django 5.2 LTS and a complete
+dependency set. Copy `.env.dev.example` for local setup; never commit real secrets.

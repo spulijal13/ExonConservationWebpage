@@ -398,3 +398,34 @@ class SearchBehaviorTests(TestCase):
         response = self.client.get('/', {'columns': ['exon_id'], 'file_format': 'csv'})
         self.assertEqual(b''.join(response.streaming_content).decode(), 'exon_id\r\na\r\n')
         self.assertEqual(self.client.get('/').context['exons'], [])
+
+
+class DeploymentTests(TestCase):
+    def setUp(self):
+        # Django's test Client bypasses WSGIHandler, which sets this per request.
+        from django.urls import get_script_prefix, set_script_prefix
+        previous = get_script_prefix()
+        set_script_prefix('/exons/')
+        self.addCleanup(set_script_prefix, previous)
+
+    @override_settings(FORCE_SCRIPT_NAME='/exons', STATIC_URL='/exons/static/')
+    def test_prefixed_navigation_assets_and_admin_redirect(self):
+        response = self.client.get('/', SCRIPT_NAME='/exons')
+        self.assertContains(response, 'href="/exons/"')
+        self.assertContains(response, 'href="/exons/about/"')
+        self.assertContains(response, '/exons/static/css/style.css')
+        self.assertContains(response, '/exons/static/javascript/main.js')
+        self.assertEqual(self.client.get('/about/', SCRIPT_NAME='/exons').status_code, 200)
+        response = self.client.get('/admin/', SCRIPT_NAME='/exons')
+        self.assertTrue(response['Location'].startswith('/exons/admin/login/'))
+
+    @override_settings(FORCE_SCRIPT_NAME='/exons', STATIC_URL='/exons/static/')
+    def test_prefixed_search_window_and_download(self):
+        ExonConservation.objects.create(exon_id='prefix-test', name='GENE')
+        params = {'columns': ['exon_id'], 'gene_name': 'GENE'}
+        response = self.client.get('/', params, SCRIPT_NAME='/exons')
+        self.assertEqual(response.context['result_count'], 1)
+        response = self.client.get('/', dict(params, results_window='1'), SCRIPT_NAME='/exons')
+        self.assertEqual(response.json()['rows'], [['prefix-test']])
+        response = self.client.get('/', dict(params, download='1', download_format='csv'), SCRIPT_NAME='/exons')
+        self.assertEqual(b''.join(response.streaming_content).decode(), 'exon_id\r\nprefix-test\r\n')

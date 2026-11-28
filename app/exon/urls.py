@@ -7,5 +7,5 @@ from . import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("rna.urls")),
-    path("about/", views.about),
+    path("about/", views.about, name="about"),
 ]

@@ -45,3 +45,8 @@ pgdata/
 
 .env.prod
 .env.prod.db
+# Private runtime configuration; examples are safe to commit.
+.env.*
+!.env.*.example
+.venv/
+.DS_Store
