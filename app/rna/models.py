@@ -1,12 +1,11 @@
+"""Database fields, search indexes, and per-assembly import metadata."""
+
 from django.db import models
 from django.db.models.functions import Upper
 from django.contrib.postgres.indexes import GinIndex, OpClass
 
-# Create your models here.
 class ExonFields(models.Model):
-    '''
-    The model that interacts with the database of information so that Django can see and use it
-    '''
+    """Annotations shared by both genome assemblies."""
     
     exon_id = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255, null=True, blank=True)
@@ -26,7 +25,7 @@ class ExonFields(models.Model):
     phastcons_100 = models.CharField(max_length=255, null=True, blank=True)
     ultra_in = models.IntegerField(null=True, blank=True)
     prime3 = models.CharField(max_length=255, null=True, blank=True)
-    prime5 =models.CharField(max_length=255, null=True, blank=True)
+    prime5 = models.CharField(max_length=255, null=True, blank=True)
     cassette = models.CharField(max_length=255, null=True, blank=True)
     const = models.CharField(max_length=255, null=True, blank=True)
     similarity_score = models.CharField(max_length=255, null=True, blank=True)
@@ -83,6 +82,8 @@ class Hg38ExonConservation(ExonFields):
 
 
 class ExonDataset(models.Model):
+    """Import summary used to choose visible controls and invalidate cached results."""
+
     assembly = models.CharField(max_length=4, primary_key=True)
     available_fields = models.JSONField(default=list)
     source_columns = models.JSONField(default=dict)

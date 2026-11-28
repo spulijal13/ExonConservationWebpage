@@ -1,14 +1,9 @@
 #!/bin/sh
-
-if [ "$DATABASE" = "postgres" ]
-then
-    echo "Waiting for postgres"
-
-    while ! nc -z $SQL_HOST $SQL_PORT; do
-        sleep 0.1
-    done
-
-    echo "PostgreSQL started"
+# Prepare data unless a release job already did so, then run the server command.
+set -eu
+cd /home/app/web
+# Multi-replica deployments should run prepare.sh once as a release job.
+if [ "${PREPARE_ON_START:-1}" = "1" ]; then
+    sh ./prepare.sh
 fi
-
 exec "$@"

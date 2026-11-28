@@ -1,9 +1,7 @@
+"""Register the exon-search app with Django."""
+
 from django.apps import AppConfig
-from django.db import connection
-'''
-This file registers the app with the Django project as a whole, 
-allows for app configuration.
-'''
+
 
 class RnaConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'

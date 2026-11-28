@@ -1,8 +1,6 @@
 #!/bin/sh
+# Prepare local data, then start the development server.
 set -eu
 cd /app
-python manage.py migrate --noinput
-python manage.py import_exons --assembly hg19
-python manage.py import_exons --assembly hg38
-python manage.py collectstatic --noinput
+sh ./prepare.sh
 exec python manage.py runserver 0.0.0.0:8000

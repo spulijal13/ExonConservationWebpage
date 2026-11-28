@@ -1,14 +1,28 @@
 # Exon CSV columns
 
-**Keep these standardized names unchanged across dataset versions.** Equivalent
-fields use the same name in both files. Indexed columns are listed first and
-marked **Yes**. Only edit headers when renaming columns; do not change data,
-column order, or remove columns unless explicitly requested.
+## Import rules
 
-Index combinations: `(chrm, exon_id)`, `(chrm, start_position, end_position)`,
-and `(exon_type, exon_id)`. Other marked fields have individual indexes;
-`name` uses a case-insensitive trigram index. hg38 also has indexes ready for
-`exon_type` and `total_exon` if those columns are added later.
+- Required in every row: `exon_id`, `chrm`, `start_position`, `end_position`, `strand`.
+- IDs must be unique. Updates must contain the same IDs as the existing assembly.
+- Use blank cells or `NA` for missing annotations; zero is a measured value.
+- Coordinates are stored as supplied. No coordinate conversion or hg19/hg38 liftover occurs.
+- Keep hg19 `ultra_in` separate from hg38 `ultrain_score_20pct_pm3`; their methods
+  have not been confirmed equivalent.
+- Keep standard names below. Confirm meaning before adding an alias in `rna/datasets.py`.
+  Conflicting aliases fail the import; unrecognized columns are reported and ignored.
+- Controls depend on recognized column headers, even if all values in a column are missing.
+  Removing a column on re-import clears its previous values.
+
+The tables describe **source CSV columns**, not just fields available in the app.
+Only model fields in `rna/models.py` are imported; source-only fields such as
+`row_id`, `transcript_start`, and `source_*` are not searchable or downloadable.
+Do not change values or column order when only standardizing headers.
+
+**Indexed** means PostgreSQL has a structure to speed searches. Combined indexes
+cover chromosome + ID, chromosome + coordinates, and exon type + ID. Gene names
+use trigram substring matching. Optional hg38 exon type/count indexes are already present.
+
+See [run/import commands](../../README.md) and [adding a metric](../../docs/MAINTENANCE.md#add-a-column-or-filter).
 
 ## hg19_exon_conservation.csv
 
@@ -91,8 +105,3 @@ and `(exon_type, exon_id)`. Other marked fields have individual indexes;
 | `source_exon_number` | — | Retained original exon-rank column. |
 | `source_strand` | — | Retained original strand column. |
 | `source_length` | — | Retained original exon-length column. |
-
-Required input: `exon_id`, `chrm`, `start_position`, `end_position`, `strand`.
-Optional annotations may be absent. Use empty cells or `NA` for missing values,
-not zero. Preserve source coordinates and score definitions. Re-import the
-changed assembly to refresh SQL data and available filters.

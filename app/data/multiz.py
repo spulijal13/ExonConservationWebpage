@@ -1,3 +1,5 @@
+"""Optional hg19 UCSC alignment helper; independent of the exon database app."""
+
 import requests
 from bs4 import BeautifulSoup
 

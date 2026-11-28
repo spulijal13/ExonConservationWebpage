@@ -1,4 +1,3 @@
-<!--This file is the display for the app-->
 {% extends "layout.html" %}
 
 {% block title %}
@@ -42,7 +41,14 @@
         {% endfor %}
         <fieldset id="columns-group" tabindex="-1" aria-describedby="columns-help id_columns_errors">
             <legend>Columns</legend>
-            <p id="columns-help">Select at least one column for the table and downloads.</p>
+            <div class="columns-heading">
+                <p id="columns-help">Select at least one column for the table and downloads.</p>
+                <div id="column-actions" class="column-actions" role="group" aria-label="Column selection" hidden>
+                    <button type="button" data-check-columns="true">Recheck all</button>
+                    <button type="button" data-check-columns="false">Uncheck all</button>
+                </div>
+            </div>
+            <span id="column-selection-status" class="sr-only" role="status"></span>
             <div class="field-errors" id="id_columns_errors">{{ form.columns.errors }}</div>
             <input type="hidden" name="columns_present" value="1">
             <div class="column-options">

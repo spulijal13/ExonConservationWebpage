@@ -1,13 +1,29 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    About
+    About the Hertel Lab
 {% endblock title %}
 
 {% block content %}
-    <body>
-    <h1>About</h1>
-    <p>there is something else over here</p>
-    <p> Go back to the home page <a href='/'>home</a> page.</p>
-    </body>
+    <article class="about-page" aria-labelledby="about-heading">
+        <h1 id="about-heading">About the Hertel Lab</h1>
+        <p>Welcome to the Hertel Lab. Our research focuses on understanding the
+            mechanisms that allow for the generation of alternative splicing patterns.</p>
+
+        <h2>Our research</h2>
+        <p>Our long-term goals are to understand how these processes are regulated,
+            to relate the basic mechanisms of splice-site recognition to biological
+            processes, and to identify strategies to manipulate the expression of
+            splicing isoforms in disease genes.</p>
+        <p>To achieve these goals, we use a wide variety of approaches, including
+            biochemistry, genetics, deep sequencing, and bioinformatics.</p>
+
+        <h2>Our team</h2>
+        <p>We are an interdisciplinary team with expertise in molecular biology,
+            computational biology, and physical chemistry. We welcome questions
+            and inquiries about our work.</p>
+        <p><a href="https://faculty.sites.uci.edu/hertellab/">Visit the Hertel Lab website</a>
+            to learn more about our research and team.</p>
+        <p><a href="{% url 'rna:exon_search' %}">Search the exon conservation database</a></p>
+    </article>
 {% endblock content %}

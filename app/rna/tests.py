@@ -1,3 +1,5 @@
+"""Check search, imports, downloads, and caching with synthetic exon records."""
+
 import csv
 import io
 import tempfile
@@ -15,11 +17,14 @@ from .models import ExonConservation
 class ExonTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        with (Path(__file__).resolve().parents[1] / 'data/hg19_exon_conservation.csv').open() as source:
-            cls.source_row = next(csv.DictReader(source))
+        cls.source_row = {
+            'exon_id': 'fixture', 'name': 'MARCHF1', 'chrm': 'chr1',
+            'start_position': '100', 'end_position': '200', 'strand': '+',
+            'total_exon': '8', 'exon_number': '7_8', 'exon_type': 'Internal_Exon',
+        }
         values = {
-            field.name: field.to_python(cls.source_row[field.name])
-            for field in ExonConservation._meta.fields
+            name: ExonConservation._meta.get_field(name).to_python(value)
+            for name, value in cls.source_row.items()
         }
         for index in range(302):
             ExonConservation.objects.create(**dict(values, exon_id=f'test{index:03}', phylo_p=index, ultra_in=index))
@@ -327,3 +332,69 @@ class Hg19CacheTests(TestCase):
         expected_fields = [index.fields for index in ExonConservation._meta.indexes]
         expected_fields = [['ultrain_score_20pct_pm3'] if fields == ['ultra_in'] else fields for fields in expected_fields]
         self.assertEqual([index.fields for index in Hg38ExonConservation._meta.indexes], expected_fields)
+
+
+class SearchBehaviorTests(TestCase):
+    def setUp(self):
+        from django.core.cache import cache
+        cache.clear()
+        self.addCleanup(cache.clear)
+
+    def test_every_numeric_comparison_for_both_assemblies(self):
+        from .models import ExonDataset, Hg38ExonConservation
+        fields = {
+            'length': 'length', 'total_exon': 'total_exon',
+            'splice_site_3': 'ss_score3', 'splice_site_5': 'ss_score5',
+            'phylo_p': 'phylo_p', 'ultra_in': 'ultra_in',
+            'ultrain_score_20pct_pm3': 'ultrain_score_20pct_pm3',
+        }
+        expected = {'eq': ['1'], 'gt': ['2'], 'lt': ['0'],
+                    'gte': ['1', '2'], 'lte': ['0', '1']}
+        for assembly, model in [('hg19', ExonConservation), ('hg38', Hg38ExonConservation)]:
+            columns = {field.name for field in model._meta.fields}
+            ExonDataset.objects.create(assembly=assembly, available_fields=list(columns),
+                                       source_sha256='', row_count=4)
+            for value in range(3):
+                model.objects.create(exon_id=str(value), **{
+                    column: value for column in fields.values() if column in columns
+                })
+            model.objects.create(exon_id='null')
+            for field, column in fields.items():
+                if column not in columns:
+                    continue
+                for comparison, ids in expected.items():
+                    with self.subTest(assembly=assembly, field=field, comparison=comparison):
+                        response = self.client.get('/', {
+                            'assembly': assembly, 'columns': ['exon_id'], field: '1',
+                            field + '_comparison': comparison,
+                        })
+                        self.assertEqual(response.context['exons'], [(value,) for value in ids])
+                response = self.client.get('/', {'assembly': assembly, 'columns': ['exon_id'], field: '0'})
+                self.assertEqual(response.context['exons'], [('0',)])
+
+    def test_special_filters_combine_and_preserve_rank_boundaries(self):
+        for identifier, rank, start, end, name in [
+            ('a', '2', 100, 200, 'AlphaGene'),
+            ('b', '2_8', 100, 200, 'AlphaGene'),
+            ('c', '20_8', 100, 200, 'AlphaGene'),
+            ('d', '2', 99, 200, 'AlphaGene'),
+            ('e', '2', 100, 201, 'AlphaGene'),
+            ('f', '2', 100, 200, 'Other'),
+        ]:
+            ExonConservation.objects.create(exon_id=identifier, exon_number=rank,
+                start_position=start, end_position=end, name=name, chrm='chr1', exon_type='Internal')
+        response = self.client.get('/', {
+            'columns': ['exon_id'], 'gene_name': 'PHAg', 'chromosome': 'chr1',
+            'exon_type': 'Internal', 'exon_number': '2',
+            'start_position': '100', 'end_position': '200',
+        })
+        self.assertEqual(response.context['exons'], [('a',), ('b',)])
+
+    def test_keyword_form_data_and_legacy_download(self):
+        form = SearchForm(data={'gene_name': 'ALPHA'})
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertIn('exon_id', form.cleaned_data['columns'])
+        ExonConservation.objects.create(exon_id='a', name='ALPHA')
+        response = self.client.get('/', {'columns': ['exon_id'], 'file_format': 'csv'})
+        self.assertEqual(b''.join(response.streaming_content).decode(), 'exon_id\r\na\r\n')
+        self.assertEqual(self.client.get('/').context['exons'], [])

@@ -1,7 +1,7 @@
+"""Render the lab About page."""
+
 from django.shortcuts import render
 
-def home(requests):
-    return render(requests, 'home.html')
 
-def about(requests):
-    return render(requests, 'about.html')
+def about(request):
+    return render(request, 'about.html')

@@ -1,5 +1,21 @@
+// Render only a window of rows; spacer rows preserve the full scroll distance.
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('error-summary')?.focus();
+    // Column controls also work before a search or after a validation error.
+    const columnActions = document.getElementById('column-actions');
+    if (columnActions) {
+        const columns = document.querySelectorAll('#columns-group input[type="checkbox"]');
+        for (const button of columnActions.querySelectorAll('button')) {
+            button.addEventListener('click', () => {
+                const checked = button.dataset.checkColumns === 'true';
+                for (const column of columns) column.checked = checked;
+                document.getElementById('column-selection-status').textContent = checked
+                    ? `All ${columns.length} columns selected.`
+                    : 'All columns unchecked. Select at least one column.';
+            });
+        }
+        columnActions.hidden = false;
+    }
     const dataElement = document.getElementById('results-data');
     if (!dataElement) return;
     const initial = JSON.parse(dataElement.textContent);
@@ -10,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let rowHeight = body.rows[0].getBoundingClientRect().height;
     const retry = document.getElementById('retry-results');
     const jump = document.getElementById('result-jump');
+    // Move by 100 rows; each server response holds 200, with four windows cached.
     const blockSize = 100;
     const cache = new Map([[0, initial.rows]]);
     let currentOffset = 0;

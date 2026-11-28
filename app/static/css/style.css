@@ -13,30 +13,6 @@ body {
     background-color: #f4f4f9;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* Header */
-header {
-    background-color: #004466;
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-}
-
-header h1 {
-    font-size: 2.5rem;
-    letter-spacing: 1px;
-}
-
-header p {
-    font-size: 1rem;
-    opacity: 0.8;
-}
-
 /* Navigation Bar */
 nav {
     background-color: #00334d;
@@ -78,78 +54,20 @@ main p {
     margin-bottom: 10px;
 }
 
-main table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-main table th,
-main table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-}
-
-main table th {
-    background-color: #004466;
-    color: white;
-}
-
-main table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-/* RNA Sequence Highlighting */
-.sequence {
-    font-family: 'Courier New', Courier, monospace;
-    background-color: #e6f2ff;
-    padding: 10px;
-    border-radius: 5px;
-    overflow-wrap: break-word;
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-}
-
-/* Highlight for Splice Sites */
-.splice-site {
-    background-color: #ffcc00;
-    color: #004466;
-    font-weight: bold;
-    padding: 2px 4px;
-    border-radius: 3px;
-}
-
 /* Buttons */
 button {
-    padding: 10px 20px;
+    min-height: 32px;
+    padding: 0.3rem 0.75rem;
     background-color: #004466;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1rem;
     margin: 5px;
 }
 
 button:hover {
     background-color: #00334d;
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    padding: 20px 0;
-    background-color: #00334d;
-    color: white;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-}
-
-footer p {
-    font-size: 0.9rem;
-    opacity: 0.7;
 }
 
 /* Responsive Design */
@@ -168,103 +86,47 @@ footer p {
     }
 }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-.form-group {
-    margin-bottom: 20px;
-}
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    font-size: 1.2rem;
-}
-button {
-    padding: 10px 20px;
-    background-color: #004466;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-}
-table th, table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-}
-table th {
-    background-color: #004466;
-    color: white;
-}
 .table-container {
-    width: 100vw;  /* scales to the page */
+    width: 100%;
     max-width: 100%;
-    height: 400px; /* Fixed height */
-    overflow: auto; /* Scrollable content */
-    border: 2px solid #004466; /* Dark border to define the cube */
-    padding: 10px;
-    background-color: white; /* Ensures the background is visible */
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); /* Soft cube shadow */
-    margin: 20px auto; /* Centering the table */
+    height: 400px;
+    overflow: auto;
+    border: 2px solid #004466;
+    padding: 0;
+    overflow-anchor: none;
+    background-color: white;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
 }
 
-.table-container table {
-    width: 100%; /* Ensures the table fits inside */
-    border-collapse: collapse;
-}
-
-.table-container th, .table-container td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-
-/* Ensures the table header remains fixed on scroll */
+/* Keep column labels visible while browsing rows. */
 .table-container thead {
     position: sticky;
     top: 0;
-    background-color: #004466; /* Keep header color */
-    color: white;
-    z-index: 2;
-}
-
-/* Adjusts font and spacing for readability */
-.table-container th {
     background-color: #004466;
     color: white;
-    font-weight: bold;
-    padding: 12px;
+    z-index: 2;
 }
 
 /* Zebra striping effect for better readability */
 .table-container tbody tr:nth-child(even) {
     background-color: #f9f9f9;
 }
-/* A fixed row height lets the table browse large results without millions of cells. */
-#exon-results {
-    padding: 0;
-    overflow-anchor: none;
-}
+/* JavaScript uses row height to calculate scroll positions; keep rows uniform. */
 #results-table {
+    width: 100%;
     table-layout: fixed;
     border-collapse: separate;
     border-spacing: 0;
     margin: 0;
 }
-#results-table col { width: 180px; }
+#results-table col { width: 14rem; }
 #results-table th, #results-table td {
-    height: 32px;
-    line-height: 20px;
     padding: 5px 8px;
+    border: solid #ddd;
     border-width: 0 1px 1px 0;
+    text-align: center;
+    font-size: 0.9rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -309,7 +171,6 @@ input:not([type="checkbox"]):not([type="hidden"]), select {
     border: 2px solid #66757f;
     border-radius: 4px;
 }
-button { min-height: 32px; padding: 0.3rem 0.75rem; }
 input[type="checkbox"] { width: 1.25rem; height: 1.25rem; flex-shrink: 0; accent-color: #004466; }
 .filter-row { display: flex; flex-wrap: wrap; gap: 0.4rem 0.75rem; margin: 0.5rem 0; align-items: start; }
 .filter-control { min-width: 0; max-width: 100%; }
@@ -317,6 +178,10 @@ input[type="checkbox"] { width: 1.25rem; height: 1.25rem; flex-shrink: 0; accent
 .filter-control label { display: block; font-weight: 600; }
 fieldset { min-width: 0; margin: 1rem 0; padding: 1rem; border: 2px solid #66757f; }
 legend { font-weight: 700; padding: 0 0.35rem; }
+.columns-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-bottom: 0.5rem; }
+.columns-heading p { margin: 0; }
+.column-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-left: auto; }
+.column-actions button { margin: 0; }
 .column-options { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
 .column-option { display: flex; align-items: center; gap: 0.5rem; min-height: 32px; padding: 0.15rem; cursor: pointer; }
 .error-summary { margin: 1rem 0; padding: 1rem; border: 3px solid #a11919; }
@@ -325,10 +190,8 @@ legend { font-weight: 700; padding: 0 0.35rem; }
 [aria-invalid="true"] { border-color: #a11919 !important; }
 .result-jump { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 #result-number { width: 8rem; }
-.table-container { width: 100%; }
-#results-table col { width: 14rem; }
 #results-table td { height: 2.5rem; line-height: 1.5; }
-#results-table th { height: auto; line-height: 1.5; white-space: normal; overflow-wrap: anywhere; }
+#results-table th { background-color: #004466; color: white; height: auto; line-height: 1.5; white-space: normal; overflow-wrap: anywhere; }
 @media (max-width: 480px) {
     main { padding: 0.75rem; }
     .filter-control input, .filter-control select { max-width: 100%; }
@@ -337,3 +200,16 @@ legend { font-weight: 700; padding: 0 0.35rem; }
 /* Display-only position within the filtered results, not a dataset field. */
 #results-table col.row-number-column { width: 4.5rem; }
 #results-table .row-number { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Readable prose that reflows with zoom and keeps links identifiable without color. */
+.about-page { max-width: 70ch; margin: 0 auto; }
+.about-page h1 { color: #004466; line-height: 1.3; margin-bottom: 1rem; }
+.about-page h2 { margin-top: 1.5rem; }
+.about-page p { margin-bottom: 1rem; }
+.about-page a {
+    color: #004466;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+}
+.about-page a:hover { text-decoration-thickness: 2px; }

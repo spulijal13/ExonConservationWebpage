@@ -1,3 +1,5 @@
+"""Import one assembly CSV; any validation failure rolls back all changes."""
+
 import csv
 import hashlib
 import math
@@ -19,11 +21,13 @@ class Command(BaseCommand):
         parser.add_argument('--assembly', choices=ASSEMBLIES, default='hg19')
         parser.add_argument('--path', type=Path)
 
+    # Includes batch writes and metadata: an error leaves the previous dataset intact.
     @transaction.atomic
     def handle(self, *args, **options):
         assembly = options['assembly']
         model = ASSEMBLIES[assembly]
         path = options.get('path') or settings.BASE_DIR / 'data' / f'{assembly}_exon_conservation.csv'
+        # Compare file contents without loading the entire CSV into memory.
         digest = hashlib.sha256()
         try:
             with path.open('rb') as source:
@@ -50,6 +54,7 @@ class Command(BaseCommand):
             batch.clear()
 
         def convert(field, value):
+            """Normalize missing values, chromosome names, and strand; preserve coordinates."""
             if value is None or value.strip().lower() in ('', 'na', 'nan', 'null', 'none'):
                 return None
             value = value.strip()
@@ -99,6 +104,7 @@ class Command(BaseCommand):
                     save_batch()
         except (OSError, KeyError, ValueError, ValidationError) as exc:
             raise CommandError(str(exc)) from exc
+        # Publish available columns and the cache fingerprint only after validation.
         ExonDataset.objects.update_or_create(assembly=assembly, defaults={
             'available_fields': list(mapping), 'source_columns': mapping,
             'source_sha256': fingerprint, 'row_count': len(seen),

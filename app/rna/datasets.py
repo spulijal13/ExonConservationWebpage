@@ -6,7 +6,8 @@ from .models import ExonConservation, Hg38ExonConservation, ExonDataset
 
 ASSEMBLIES = {'hg19': ExonConservation, 'hg38': Hg38ExonConservation}
 
-# Alias order prefers already-normalized CSV columns. Canonical names also work.
+# Accepted names for the same metric; model field names also work.
+# If several aliases occur together, their non-missing values must agree.
 ALIASES = {
     'exon_id': ('exon_stable_id', 'Exon stable ID', 'exon_id', 'id'),
     'name': ('gene_name', 'Gene name', 'name'),

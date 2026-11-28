@@ -1,0 +1,3 @@
+# Optional dependencies for the standalone multiz.py utility.
+requests
+beautifulsoup4

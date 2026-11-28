@@ -1,26 +1,19 @@
-# Pull official base image
+# Local Python environment; Compose mounts app/ here for live source edits.
 FROM python:3.11-slim-bookworm
 
-# Set work directory
 WORKDIR /app
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
 RUN pip install --upgrade pip
 COPY ./requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy entrypoint.sh
 COPY ./entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
 
-# Copy the entire project
 COPY . .
 
-# Run entrypoint.sh
 ENTRYPOINT ["bash", "./entrypoint.sh"]
